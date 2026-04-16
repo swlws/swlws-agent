@@ -245,4 +245,3 @@ export default function MarkdownView({ content }: { content: string }) {
 
   return <>{blocks}</>;
 }
-
