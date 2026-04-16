@@ -1,6 +1,7 @@
 import { chatStream } from "@/be/lib/llm";
 import { buildContextMessages, updateSession } from "@/be/memory";
 import { loadSession, saveSession } from "@/be/session";
+import { generatePersona } from "@/be/persona";
 
 export interface QueryHandlers {
   onToken: (token: string) => void;
@@ -35,7 +36,20 @@ export class QueryEngine {
       onDone();
 
       updateSession(session, content, assistantReply)
-        .then((updated) => saveSession(uid, updated))
+        .then((updated) => {
+          const memoriesChanged =
+            JSON.stringify(updated.memories) !== JSON.stringify(session.memories);
+
+          if (memoriesChanged) {
+            return generatePersona(updated)
+              .then((persona) => saveSession(uid, { ...updated, persona }))
+              .catch((err) => {
+                console.error("[persona] failed to generate:", err);
+                return saveSession(uid, updated);
+              });
+          }
+          return saveSession(uid, updated);
+        })
         .catch((err) => console.error("[memory] failed to save session:", err));
     } catch (err) {
       onError(err instanceof Error ? err : new Error("Unknown error"));

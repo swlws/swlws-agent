@@ -17,9 +17,21 @@ export interface Memory {
   content: string;
 }
 
+export interface PersonaTrait {
+  dimension: string;
+  value: string;
+}
+
+export interface Persona {
+  summary: string;
+  traits: PersonaTrait[];
+  updatedAt: string;
+}
+
 export interface Session {
   memories: Memory[];
   messages: ChatMessage[];
+  persona?: Persona;
 }
 
 const SESSIONS_DIR = path.join(process.cwd(), ".sessions");
