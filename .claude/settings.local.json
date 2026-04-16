@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx create-next-app@latest *)",
+      "Bash(mv .claude /tmp/custom-agent-claude-backup)",
+      "Bash(mv README.md /tmp/custom-agent-readme-backup.md)",
+      "Bash(mv /tmp/custom-agent-claude-backup /Users/sunwenlong.33/File/OpenCode/custom-agent/.claude)",
+      "Bash(mv /tmp/custom-agent-readme-backup.md /Users/sunwenlong.33/File/OpenCode/custom-agent/README.md)",
+      "Bash(npm install *)",
+      "Bash(node *)",
+      "Bash(npx tsc *)"
+    ]
+  }
+}
