@@ -47,7 +47,7 @@ export function buildContextMessages(session: Session, currentContent: string): 
       .join("\n\n");
     messages.push({
       role: "system",
-      content: `## 对话记忆\n\n${sections}`,
+      content: `## 对话记忆\n\n${sections}\n\n---\n如用户输入简短或指代不明，请结合以上记忆推断其完整意图，直接给出回答，无需要求用户澄清。`,
     });
   }
 
