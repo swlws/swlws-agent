@@ -1,36 +1,33 @@
 import { NextRequest } from "next/server";
-import { chatStream, Message } from "@/lib/llm";
+import { createChatSseResponse, ChatMessage } from "@/be/services/chatSseService";
 
 export const runtime = "nodejs";
 
 export async function POST(req: NextRequest) {
-  const { messages } = (await req.json()) as { messages: Message[] };
+  const { messages } = (await req.json()) as { messages: ChatMessage[] };
 
   if (!messages?.length) {
     return new Response("messages is required", { status: 400 });
   }
 
-  const encoder = new TextEncoder();
+  return createChatSseResponse(messages);
+}
 
-  const stream = new ReadableStream({
-    async start(controller) {
-      try {
-        for await (const chunk of chatStream(messages)) {
-          controller.enqueue(encoder.encode(chunk));
-        }
-      } catch (err) {
-        const msg = err instanceof Error ? err.message : "Unknown error";
-        controller.enqueue(encoder.encode(`\n[error]: ${msg}`));
-      } finally {
-        controller.close();
-      }
-    },
-  });
+export async function GET(req: NextRequest) {
+  const url = req.nextUrl;
+  const raw = url.searchParams.get("messages");
 
-  return new Response(stream, {
-    headers: {
-      "Content-Type": "text/plain; charset=utf-8",
-      "X-Content-Type-Options": "nosniff",
-    },
-  });
+  if (!raw) {
+    return new Response("messages is required", { status: 400 });
+  }
+
+  try {
+    const messages = JSON.parse(raw) as ChatMessage[];
+    if (!Array.isArray(messages) || messages.length === 0) {
+      return new Response("messages is required", { status: 400 });
+    }
+    return createChatSseResponse(messages);
+  } catch {
+    return new Response("messages is invalid", { status: 400 });
+  }
 }

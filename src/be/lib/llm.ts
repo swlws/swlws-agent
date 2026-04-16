@@ -18,18 +18,28 @@ function createClient(): OpenAI {
   });
 }
 
+function resolveModel(explicitModel?: string): string {
+  // `OPENAI_MODE` is kept for backwards compatibility with current `.env.local`.
+  return (
+    explicitModel ||
+    process.env.OPENAI_MODEL ||
+    process.env.OPENAI_MODE ||
+    "gpt-4o-mini"
+  );
+}
+
 /**
  * Single-turn chat completion
  */
 export async function chat(
   messages: Message[],
-  options: LLMOptions = {}
+  options: LLMOptions = {},
 ): Promise<string> {
   const client = createClient();
-  const { model = "gpt-4o-mini", temperature = 0.7, maxTokens } = options;
+  const { model, temperature = 0.7, maxTokens } = options;
 
   const response = await client.chat.completions.create({
-    model,
+    model: resolveModel(model),
     messages,
     temperature,
     max_tokens: maxTokens,
@@ -43,13 +53,13 @@ export async function chat(
  */
 export async function* chatStream(
   messages: Message[],
-  options: LLMOptions = {}
+  options: LLMOptions = {},
 ): AsyncGenerator<string> {
   const client = createClient();
-  const { model = "gpt-4o-mini", temperature = 0.7, maxTokens } = options;
+  const { model, temperature = 0.7, maxTokens } = options;
 
   const stream = await client.chat.completions.create({
-    model,
+    model: resolveModel(model),
     messages,
     temperature,
     max_tokens: maxTokens,
@@ -68,10 +78,11 @@ export async function* chatStream(
 export async function prompt(
   userMessage: string,
   systemPrompt?: string,
-  options: LLMOptions = {}
+  options: LLMOptions = {},
 ): Promise<string> {
   const messages: Message[] = [];
   if (systemPrompt) messages.push({ role: "system", content: systemPrompt });
   messages.push({ role: "user", content: userMessage });
   return chat(messages, options);
 }
+
