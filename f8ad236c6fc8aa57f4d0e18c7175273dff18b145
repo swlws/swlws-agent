@@ -1,0 +1,36 @@
+src/fe/components/MarkdownView/index.tsx
+  cac88ca785364c88 33-52
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.2.8",
+  "base_commit_sha": "f8ad236c6fc8aa57f4d0e18c7175273dff18b145",
+  "prompts": {
+    "c9a764f5b72da024": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "341e4a00-5e23-4c03-882e-56de740f3bfa",
+        "model": "mcs-5"
+      },
+      "human_author": "swlws",
+      "messages": [],
+      "total_additions": 0,
+      "total_deletions": 0,
+      "accepted_lines": 1,
+      "overriden_lines": 0
+    },
+    "cac88ca785364c88": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "371a97d3-9a9b-4010-84f7-537dc96a6290",
+        "model": "mcs-5"
+      },
+      "human_author": "swlws",
+      "messages": [],
+      "total_additions": 21,
+      "total_deletions": 1,
+      "accepted_lines": 173,
+      "overriden_lines": 0
+    }
+  }
+}
