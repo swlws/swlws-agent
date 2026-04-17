@@ -1,5 +1,5 @@
 import { chat } from "@/be/lib/llm";
-import type { Session, Memory, ChatMessage } from "@/be/session";
+import type { ConversationData, Memory, ChatMessage } from "@/be/session";
 
 const KEEP_RECENT = 4;
 
@@ -48,7 +48,7 @@ async function extractMemories(
 }
 
 export interface CompactMemoriesResult {
-  session: Session;
+  conv: ConversationData;
   memoriesChanged: boolean;
 }
 
@@ -56,15 +56,15 @@ export interface CompactMemoriesResult {
  * When messages exceed the window, compress overflow into typed memories.
  * No-op when within the window.
  */
-export async function compactMemories(session: Session): Promise<CompactMemoriesResult> {
-  if (session.messages.length <= KEEP_RECENT) {
-    return { session, memoriesChanged: false };
+export async function compactMemories(conv: ConversationData): Promise<CompactMemoriesResult> {
+  if (conv.messages.length <= KEEP_RECENT) {
+    return { conv, memoriesChanged: false };
   }
 
-  const overflow = session.messages.slice(0, session.messages.length - KEEP_RECENT);
-  const recent = session.messages.slice(-KEEP_RECENT);
-  const memories = await extractMemories(session.memories, overflow);
+  const overflow = conv.messages.slice(0, conv.messages.length - KEEP_RECENT);
+  const recent = conv.messages.slice(-KEEP_RECENT);
+  const memories = await extractMemories(conv.memories, overflow);
 
-  const memoriesChanged = JSON.stringify(memories) !== JSON.stringify(session.memories);
-  return { session: { ...session, memories, messages: recent }, memoriesChanged };
+  const memoriesChanged = JSON.stringify(memories) !== JSON.stringify(conv.memories);
+  return { conv: { ...conv, memories, messages: recent }, memoriesChanged };
 }

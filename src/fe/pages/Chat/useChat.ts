@@ -1,28 +1,55 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { connectChatSse, ChatMessage } from "@/fe/lib/chatSseClient";
-import { getUid } from "@/fe/lib/uid";
+import { getUid, getConversationId, createNewConversationId, setConversationId } from "@/fe/lib/uid";
+
+export interface ConversationMeta {
+  conversationId: string;
+  title: string;
+  createdAt: string;
+  updatedAt: string;
+}
 
 export function useChat() {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
+  const [conversationId, setConversationIdState] = useState<string>("");
+  const [conversations, setConversations] = useState<ConversationMeta[]>([]);
   const sseRef = useRef<{ close: () => void } | null>(null);
 
   useEffect(() => {
+    setConversationIdState(getConversationId());
     return () => {
       sseRef.current?.close();
     };
   }, []);
 
-  async function loadHistory() {
-    const res = await fetch(`/api/memory?uid=${encodeURIComponent(getUid())}`);
+  const loadConversationList = useCallback(async () => {
+    const res = await fetch(`/api/conversations?uid=${encodeURIComponent(getUid())}`);
+    const list: ConversationMeta[] = await res.json();
+    setConversations(list);
+  }, []);
+
+  async function switchConversation(cid: string) {
+    sseRef.current?.close();
+    sseRef.current = null;
+    setLoading(false);
+    setInput("");
+    setConversationId(cid);
+    setConversationIdState(cid);
+
+    const res = await fetch(
+      `/api/memory?uid=${encodeURIComponent(getUid())}&conversationId=${encodeURIComponent(cid)}`,
+    );
     const cached: ChatMessage[] = await res.json();
-    if (cached.length > 0) setMessages(cached);
+    setMessages(cached);
   }
 
   function newChat() {
     sseRef.current?.close();
     sseRef.current = null;
+    const cid = createNewConversationId();
+    setConversationIdState(cid);
     setMessages([]);
     setInput("");
     setLoading(false);
@@ -50,9 +77,11 @@ export function useChat() {
     const assistantIndex = next.length;
     setMessages((prev) => [...prev, { role: "assistant", content: "" }]);
 
+    const cid = conversationId;
     sseRef.current?.close();
     sseRef.current = connectChatSse({
       uid: getUid(),
+      conversationId: cid,
       content: text,
       onToken: (token) => {
         setMessages((prev) => {
@@ -67,6 +96,7 @@ export function useChat() {
       onDone: () => {
         sseRef.current = null;
         setLoading(false);
+        loadConversationList();
       },
       onError: (err) => {
         sseRef.current = null;
@@ -91,5 +121,19 @@ export function useChat() {
     }
   }
 
-  return { messages, input, setInput, loading, send, sendText, abort, newChat, loadHistory, handleKeyDown };
+  return {
+    messages,
+    input,
+    setInput,
+    loading,
+    send,
+    sendText,
+    abort,
+    newChat,
+    handleKeyDown,
+    conversations,
+    loadConversationList,
+    switchConversation,
+    conversationId,
+  };
 }

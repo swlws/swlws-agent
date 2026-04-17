@@ -2,6 +2,7 @@ export type ChatMessage = { role: "user" | "assistant"; content: string };
 
 type ConnectChatSseParams = {
   uid: string;
+  conversationId: string;
   content: string;
   onToken: (token: string) => void;
   onDone?: () => void;
@@ -14,12 +15,13 @@ type ConnectChatSseParams = {
  */
 export function connectChatSse({
   uid,
+  conversationId,
   content,
   onToken,
   onDone,
   onError,
 }: ConnectChatSseParams): { close: () => void } {
-  const url = `/api/chat?uid=${encodeURIComponent(uid)}&content=${encodeURIComponent(content)}`;
+  const url = `/api/chat?uid=${encodeURIComponent(uid)}&conversationId=${encodeURIComponent(conversationId)}&content=${encodeURIComponent(content)}`;
   const es = new EventSource(url);
 
   let finished = false;

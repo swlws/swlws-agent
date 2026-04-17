@@ -1,5 +1,5 @@
 import { chat } from "@/be/lib/llm";
-import type { Session, Persona, MindCard, ChatMessage } from "@/be/session";
+import type { ConversationData, Persona, MindCard, MindCardsData } from "@/be/session";
 
 const MINDCARDS_TTL_MS = 4 * 60 * 60 * 1000; // 4 hours
 
@@ -20,22 +20,37 @@ const MINDCARDS_PROMPT = `你是一个对话引导专家。根据用户的人物
 输出格式：
 [{"title":"...","desc":"...","prompt":"..."}]`;
 
-export async function generateMindCards(
+const DEFAULT_MINDCARDS_PROMPT = `你是一个对话引导专家。用户刚开始使用这个 AI 助手，还没有任何对话记录。
+请生成 16 张通用心智卡片，覆盖多种使用场景，帮助用户发现这个助手的价值。
+
+每张卡片要求：
+- title：2-5 字的主题标题
+- desc：一句话说明价值，15 字以内
+- prompt：具体的问题或指令，20-40 字，有趣且实用
+
+覆盖维度：学习探索、工作效率、创意思维、问题解决、技术开发、写作表达、分析决策、日常规划等
+- 仅输出 JSON 数组，不添加任何其他文字
+
+输出格式：
+[{"title":"...","desc":"...","prompt":"..."}]`;
+
+async function generateMindCards(
   persona: Persona,
-  messages: ChatMessage[],
+  conversations: ConversationData[],
 ): Promise<MindCard[]> {
   const personaText = [
     `总结：${persona.summary}`,
     ...persona.traits.map((t) => `${t.dimension}：${t.value}`),
   ].join("\n");
 
-  const contextText =
-    messages.length > 0
-      ? messages
-          .slice(-6)
-          .map((m) => `${m.role === "user" ? "用户" : "助手"}：${m.content}`)
-          .join("\n")
-      : "（暂无对话记录）";
+  // 取所有会话最近消息作为上下文
+  const recentMessages = conversations
+    .flatMap((c) => c.messages.slice(-2))
+    .slice(-6)
+    .map((m) => `${m.role === "user" ? "用户" : "助手"}：${m.content}`)
+    .join("\n");
+
+  const contextText = recentMessages || "（暂无对话记录）";
 
   const raw = await chat([
     { role: "system", content: MINDCARDS_PROMPT },
@@ -53,26 +68,50 @@ export async function generateMindCards(
   }
 }
 
-/**
- * Refresh mind cards when TTL has expired or no cards exist.
- * Requires persona to be present; leaves cards untouched otherwise.
- */
-export async function refreshMindCards(session: Session): Promise<Session> {
-  if (!session.persona) return session;
-
-  const hasCards = (session.mindCards?.length ?? 0) > 0;
-  if (hasCards) {
-    const elapsed = session.mindCardsUpdatedAt
-      ? Date.now() - new Date(session.mindCardsUpdatedAt).getTime()
-      : Infinity;
-    if (elapsed <= MINDCARDS_TTL_MS) return session;
-  }
+async function generateDefaultMindCards(): Promise<MindCard[]> {
+  const raw = await chat([
+    { role: "system", content: DEFAULT_MINDCARDS_PROMPT },
+    { role: "user", content: "请生成通用心智卡片。" },
+  ]);
 
   try {
-    const mindCards = await generateMindCards(session.persona, session.messages);
-    return { ...session, mindCards, mindCardsUpdatedAt: new Date().toISOString() };
+    const match = raw.match(/\[[\s\S]*\]/);
+    return match ? (JSON.parse(match[0]) as MindCard[]) : [];
+  } catch {
+    return [];
+  }
+}
+
+/**
+ * Refresh mind cards every 4 hours based on summaries of all conversations.
+ * When no conversations exist, randomly generate default cards.
+ */
+export async function refreshMindCards(
+  conversations: ConversationData[],
+  persona: Persona | null,
+  currentData: MindCardsData,
+): Promise<MindCardsData> {
+  // 检查 TTL
+  const elapsed = Date.now() - new Date(currentData.updatedAt).getTime();
+  if ((currentData.cards.length ?? 0) > 0 && elapsed <= MINDCARDS_TTL_MS) {
+    return currentData;
+  }
+
+  const hasContent = conversations.some(
+    (c) => c.memories.length > 0 || c.messages.length > 0,
+  );
+
+  try {
+    let cards: MindCard[];
+    if (!hasContent || !persona) {
+      // 无会话时随机生成默认卡片
+      cards = await generateDefaultMindCards();
+    } else {
+      cards = await generateMindCards(persona, conversations);
+    }
+    return { cards, updatedAt: new Date().toISOString() };
   } catch (err) {
     console.error("[mindcards] failed to generate:", err);
-    return session;
+    return currentData;
   }
 }

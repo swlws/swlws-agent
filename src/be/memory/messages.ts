@@ -1,4 +1,4 @@
-import type { Session, ChatMessage } from "@/be/session";
+import type { ConversationData, ChatMessage } from "@/be/session";
 import type { Message as LlmMessage } from "@/be/lib/llm";
 
 export type { ChatMessage };
@@ -14,13 +14,13 @@ const MEMORY_LABELS: Record<string, string> = {
  * Build the LLM input: structured memory index as system prompt + recent messages + current input.
  */
 export function buildContextMessages(
-  session: Session,
+  conv: ConversationData,
   currentContent: string,
 ): LlmMessage[] {
   const parts: string[] = [];
 
-  if (session.memories.length > 0) {
-    const sections = session.memories
+  if (conv.memories.length > 0) {
+    const sections = conv.memories
       .map((m) => `### ${MEMORY_LABELS[m.type] ?? m.type}\n${m.content}`)
       .join("\n\n");
     parts.push(`## 对话记忆\n\n${sections}`);
@@ -31,23 +31,27 @@ export function buildContextMessages(
 
   return [
     { role: "system", content: parts.join("\n\n") },
-    ...session.messages,
+    ...conv.messages,
     { role: "user", content: currentContent },
   ];
 }
 
 /**
  * Append the new exchange. Always runs, synchronous.
+ * Also sets title from the first user message.
  */
 export function appendMessages(
-  session: Session,
+  conv: ConversationData,
   userContent: string,
   assistantContent: string,
-): Session {
+): ConversationData {
+  const title = conv.title ?? userContent.slice(0, 30);
   return {
-    ...session,
+    ...conv,
+    title,
+    updatedAt: new Date().toISOString(),
     messages: [
-      ...session.messages,
+      ...conv.messages,
       { role: "user", content: userContent },
       { role: "assistant", content: assistantContent },
     ],

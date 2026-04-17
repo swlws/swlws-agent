@@ -3,7 +3,7 @@ import { registerAbort, releaseAbort } from "./abortRegistry";
 
 const engine = new QueryEngine();
 
-function createSSEStream(uid: string, content: string) {
+function createSSEStream(uid: string, conversationId: string, content: string) {
   const signal = registerAbort(uid);
   const encoder = new TextEncoder();
 
@@ -16,6 +16,7 @@ function createSSEStream(uid: string, content: string) {
       try {
         await engine.run(
           uid,
+          conversationId,
           content,
           {
             onToken: (chunk) => sendEvent(JSON.stringify({ type: "token", content: chunk })),
@@ -41,6 +42,6 @@ function createSSEStream(uid: string, content: string) {
   });
 }
 
-export function createChatSseResponse(uid: string, content: string) {
-  return createSSEStream(uid, content);
+export function createChatSseResponse(uid: string, conversationId: string, content: string) {
+  return createSSEStream(uid, conversationId, content);
 }
