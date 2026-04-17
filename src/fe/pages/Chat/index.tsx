@@ -51,6 +51,7 @@ export default function Chat() {
       <ChatHeader
         onOpenPersona={() => setPersonaOpen(true)}
         onToggleSidebar={() => setSidebarOpen((v) => !v)}
+        onNewChat={handleNewChat}
         sidebarOpen={sidebarOpen}
       />
       <MessageList messages={messages} loading={loading} onCardSelect={sendText} />
