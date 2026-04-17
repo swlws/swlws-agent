@@ -1,5 +1,5 @@
 import { chatStream } from "@/be/lib/llm";
-import { buildContextMessages, updateSession } from "@/be/memory";
+import { buildContextMessages, updateSession, compactMemories } from "@/be/memory";
 import { loadSession, saveSession } from "@/be/session";
 import { refreshPersona } from "@/be/persona";
 import { refreshMindCards } from "@/be/mindcards";
@@ -31,11 +31,8 @@ export class QueryEngine {
 
       onDone();
 
-      const { session: afterMemory, memoriesChanged } = await updateSession(
-        session,
-        content,
-        assistantReply,
-      );
+      const afterMessages = updateSession(session, content, assistantReply);
+      const { session: afterMemory, memoriesChanged } = await compactMemories(afterMessages);
       const afterPersona = await refreshPersona(afterMemory, memoriesChanged);
       const afterCards = await refreshMindCards(afterPersona);
       await saveSession(uid, afterCards);

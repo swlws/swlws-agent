@@ -95,31 +95,40 @@ async function extractMemories(
   }
 }
 
-export interface UpdateSessionResult {
+/**
+ * Append the new exchange. Always runs, synchronous.
+ */
+export function updateSession(
+  session: Session,
+  userContent: string,
+  assistantContent: string,
+): Session {
+  return {
+    ...session,
+    messages: [
+      ...session.messages,
+      { role: "user", content: userContent },
+      { role: "assistant", content: assistantContent },
+    ],
+  };
+}
+
+export interface CompactMemoriesResult {
   session: Session;
   memoriesChanged: boolean;
 }
 
 /**
- * Append the new exchange, then compress overflow into typed memories when needed.
+ * When messages exceed the window, compress overflow into typed memories.
+ * No-op when within the window.
  */
-export async function updateSession(
-  session: Session,
-  userContent: string,
-  assistantContent: string,
-): Promise<UpdateSessionResult> {
-  const messages: ChatMessage[] = [
-    ...session.messages,
-    { role: "user", content: userContent },
-    { role: "assistant", content: assistantContent },
-  ];
-
-  if (messages.length <= KEEP_RECENT) {
-    return { session: { ...session, messages }, memoriesChanged: false };
+export async function compactMemories(session: Session): Promise<CompactMemoriesResult> {
+  if (session.messages.length <= KEEP_RECENT) {
+    return { session, memoriesChanged: false };
   }
 
-  const overflow = messages.slice(0, messages.length - KEEP_RECENT);
-  const recent = messages.slice(-KEEP_RECENT);
+  const overflow = session.messages.slice(0, session.messages.length - KEEP_RECENT);
+  const recent = session.messages.slice(-KEEP_RECENT);
   const memories = await extractMemories(session.memories, overflow);
 
   const memoriesChanged = JSON.stringify(memories) !== JSON.stringify(session.memories);
