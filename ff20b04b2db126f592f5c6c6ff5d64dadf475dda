@@ -1,0 +1,38 @@
+src/fe/pages/Chat/ChatHeader.tsx
+  92f688c892a3982c 4,8,11-32
+src/fe/pages/Chat/index.tsx
+  92f688c892a3982c 54
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.2.8",
+  "base_commit_sha": "ff20b04b2db126f592f5c6c6ff5d64dadf475dda",
+  "prompts": {
+    "92f688c892a3982c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ca31b252-6356-4a0d-92b9-7cb3fba4a8d2",
+        "model": "mcs-5"
+      },
+      "human_author": "swlws",
+      "messages": [],
+      "total_additions": 25,
+      "total_deletions": 11,
+      "accepted_lines": 25,
+      "overriden_lines": 0
+    },
+    "c9a764f5b72da024": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "341e4a00-5e23-4c03-882e-56de740f3bfa",
+        "model": "mcs-5"
+      },
+      "human_author": "swlws",
+      "messages": [],
+      "total_additions": 0,
+      "total_deletions": 0,
+      "accepted_lines": 1,
+      "overriden_lines": 0
+    }
+  }
+}
