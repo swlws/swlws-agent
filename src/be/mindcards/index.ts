@@ -60,11 +60,13 @@ export async function generateMindCards(
 export async function refreshMindCards(session: Session): Promise<Session> {
   if (!session.persona) return session;
 
-  const stale =
-    !session.mindCardsUpdatedAt ||
-    Date.now() - new Date(session.mindCardsUpdatedAt).getTime() > MINDCARDS_TTL_MS;
-
-  if (!stale) return session;
+  const hasCards = (session.mindCards?.length ?? 0) > 0;
+  if (hasCards) {
+    const elapsed = session.mindCardsUpdatedAt
+      ? Date.now() - new Date(session.mindCardsUpdatedAt).getTime()
+      : Infinity;
+    if (elapsed <= MINDCARDS_TTL_MS) return session;
+  }
 
   try {
     const mindCards = await generateMindCards(session.persona, session.messages);
