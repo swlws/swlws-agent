@@ -1,5 +1,9 @@
 import { useState, useEffect } from "react";
-import { type AppSettings, fetchSettings, persistSettings } from "@/fe/lib/settings";
+import {
+  type AppSettings,
+  fetchSettings,
+  persistSettings,
+} from "@/fe/lib/settings";
 
 interface SettingsPanelProps {
   isOpen: boolean;
@@ -17,19 +21,34 @@ const DEFAULT_FORM: AppSettings = {
 const HOUR_OPTIONS = [1, 2, 4, 8, 12, 24];
 const CARD_COUNT_OPTIONS = [2, 4, 6, 8, 10, 12, 14, 16];
 
-function Row({ label, hint, children }: { label: string; hint: string; children: React.ReactNode }) {
+function Row({
+  label,
+  hint,
+  children,
+}: {
+  label: string;
+  hint: string;
+  children: React.ReactNode;
+}) {
   return (
     <div className="flex items-center justify-between gap-4 py-3">
       <div className="min-w-0 flex-1">
         <p className="text-sm text-gray-800 dark:text-gray-100">{label}</p>
-        <p className="mt-0.5 text-xs text-gray-400 dark:text-gray-500">{hint}</p>
+        <p className="mt-0.5 text-xs text-gray-400 dark:text-gray-500">
+          {hint}
+        </p>
       </div>
       <div className="shrink-0">{children}</div>
     </div>
   );
 }
 
-function Select({ value, options, onChange, format }: {
+function Select({
+  value,
+  options,
+  onChange,
+  format,
+}: {
   value: number;
   options: number[];
   onChange: (v: number) => void;
@@ -96,12 +115,23 @@ export function SettingsPanel({ isOpen, onClose, onSave }: SettingsPanelProps) {
       <div className="relative w-full max-w-sm rounded-2xl bg-white shadow-2xl dark:bg-[#2a2a2a]">
         {/* 头部 */}
         <div className="flex items-center justify-between border-b border-gray-200 px-5 py-4 dark:border-[#3f3f46]">
-          <h2 className="text-base font-semibold text-gray-900 dark:text-gray-100">设置</h2>
+          <h2 className="text-base font-semibold text-gray-900 dark:text-gray-100">
+            设置
+          </h2>
           <button
             onClick={onClose}
             className="rounded-md p-1 text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-700 dark:hover:bg-[#3f3f46] dark:hover:text-gray-200"
           >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
               <line x1="18" y1="6" x2="6" y2="18" />
               <line x1="6" y1="6" x2="18" y2="18" />
             </svg>
@@ -110,14 +140,19 @@ export function SettingsPanel({ isOpen, onClose, onSave }: SettingsPanelProps) {
 
         {/* 配置项 */}
         <div className="divide-y divide-gray-100 px-5 dark:divide-[#3f3f46]">
-          <Row label="对话缓存数量" hint={`压缩前保留最近 ${form.conversationCacheCount} 条消息，4-12`}>
+          <Row
+            label="对话缓存数量"
+            hint={`压缩前保留最近 ${form.conversationCacheCount} 条消息，4-12`}
+          >
             <div className="flex items-center gap-2">
               <input
                 type="range"
                 min={4}
                 max={12}
                 value={form.conversationCacheCount}
-                onChange={(e) => set("conversationCacheCount", Number(e.target.value))}
+                onChange={(e) =>
+                  set("conversationCacheCount", Number(e.target.value))
+                }
                 className="w-24 accent-gray-800 dark:accent-gray-300"
               />
               <span className="w-5 text-center text-sm tabular-nums text-gray-700 dark:text-gray-300">
@@ -126,7 +161,10 @@ export function SettingsPanel({ isOpen, onClose, onSave }: SettingsPanelProps) {
             </div>
           </Row>
 
-          <Row label="人物画像更新频率" hint="距上次更新超过此时长后，下次对话时自动刷新">
+          <Row
+            label="人物画像更新频率"
+            hint="距上次更新超过此时长后，下次对话时自动刷新"
+          >
             <Select
               value={form.personaUpdateHours}
               options={HOUR_OPTIONS}
@@ -144,7 +182,10 @@ export function SettingsPanel({ isOpen, onClose, onSave }: SettingsPanelProps) {
             />
           </Row>
 
-          <Row label="心智卡片更新频率" hint="距上次更新超过此时长后，下次对话时自动刷新">
+          <Row
+            label="心智卡片更新频率"
+            hint="距上次更新超过此时长后，下次对话时自动刷新"
+          >
             <Select
               value={form.mindCardsUpdateHours}
               options={HOUR_OPTIONS}

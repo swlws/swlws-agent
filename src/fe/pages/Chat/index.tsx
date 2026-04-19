@@ -30,7 +30,6 @@ export default function Chat() {
   const [personaOpen, setPersonaOpen] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
-
   useEffect(() => {
     loadConversationList();
   }, [loadConversationList]);
@@ -58,7 +57,11 @@ export default function Chat() {
         onNewChat={handleNewChat}
         sidebarOpen={sidebarOpen}
       />
-      <MessageList messages={messages} loading={loading} onCardSelect={sendText} />
+      <MessageList
+        messages={messages}
+        loading={loading}
+        onCardSelect={sendText}
+      />
       <InputBar
         value={input}
         onChange={setInput}
@@ -69,7 +72,10 @@ export default function Chat() {
         loading={loading}
       />
 
-      <PersonaPanel isOpen={personaOpen} onClose={() => setPersonaOpen(false)} />
+      <PersonaPanel
+        isOpen={personaOpen}
+        onClose={() => setPersonaOpen(false)}
+      />
       <SettingsPanel
         isOpen={settingsOpen}
         onClose={() => setSettingsOpen(false)}

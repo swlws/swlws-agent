@@ -12,7 +12,10 @@ export interface AppSettings {
   mindCardsUpdateHours: number;
 }
 
-const DEFAULT_CONFIG_PATH = path.join(process.cwd(), "src/be/config/setting.json");
+const DEFAULT_CONFIG_PATH = path.join(
+  process.cwd(),
+  "src/be/config/setting.json",
+);
 
 let _defaultCache: AppSettings | null = null;
 
@@ -35,6 +38,9 @@ export async function loadDefaultSettings(): Promise<AppSettings> {
 }
 
 /** 用户配置覆盖默认配置，仅覆盖已定义的字段 */
-export function mergeSettings(defaults: AppSettings, user: Partial<AppSettings>): AppSettings {
+export function mergeSettings(
+  defaults: AppSettings,
+  user: Partial<AppSettings>,
+): AppSettings {
   return { ...defaults, ...user };
 }
