@@ -8,19 +8,14 @@ import { InputBar } from "./InputBar";
 import { PersonaPanel } from "./PersonaPanel";
 import { ConversationList } from "./ConversationList";
 import { SettingsPanel } from "./SettingsPanel";
-import type { AppSettings } from "@/fe/lib/settings";
 
 export default function Chat() {
   const {
     messages,
-    input,
-    setInput,
     loading,
-    send,
     sendText,
     abort,
     newChat,
-    handleKeyDown,
     conversations,
     loadConversationList,
     switchConversation,
@@ -63,13 +58,11 @@ export default function Chat() {
         onCardSelect={sendText}
       />
       <InputBar
-        value={input}
-        onChange={setInput}
-        onSend={send}
+        onSend={sendText}
         onAbort={abort}
-        onKeyDown={handleKeyDown}
         disabled={loading}
         loading={loading}
+        conversationId={conversationId}
       />
 
       <PersonaPanel
@@ -79,7 +72,7 @@ export default function Chat() {
       <SettingsPanel
         isOpen={settingsOpen}
         onClose={() => setSettingsOpen(false)}
-        onSave={(_s: AppSettings) => {}}
+        onSave={() => {}}
       />
     </div>
   );

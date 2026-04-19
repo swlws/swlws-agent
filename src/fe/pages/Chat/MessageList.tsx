@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, memo } from "react";
 import { ChatMessage } from "@/fe/lib/chatSseClient";
 import { MessageItem } from "./MessageItem";
 import { MindCards } from "./MindCards";
@@ -9,7 +9,11 @@ interface MessageListProps {
   onCardSelect: (prompt: string) => void;
 }
 
-export function MessageList({ messages, loading, onCardSelect }: MessageListProps) {
+export const MessageList = memo(function MessageList({
+  messages,
+  loading,
+  onCardSelect,
+}: MessageListProps) {
   const bottomRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -39,4 +43,4 @@ export function MessageList({ messages, loading, onCardSelect }: MessageListProp
       <div ref={bottomRef} />
     </div>
   );
-}
+});

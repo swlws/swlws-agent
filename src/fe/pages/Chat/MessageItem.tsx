@@ -1,3 +1,4 @@
+import { memo } from "react";
 import MarkdownView from "@/fe/components/MarkdownView";
 import { ChatMessage } from "@/fe/lib/chatSseClient";
 
@@ -7,7 +8,11 @@ interface MessageItemProps {
   loading: boolean;
 }
 
-export function MessageItem({ message, isLast, loading }: MessageItemProps) {
+export const MessageItem = memo(function MessageItem({
+  message,
+  isLast,
+  loading,
+}: MessageItemProps) {
   const isUser = message.role === "user";
   const showLoader = loading && isLast && !message.content;
 
@@ -38,4 +43,4 @@ export function MessageItem({ message, isLast, loading }: MessageItemProps) {
       </div>
     </div>
   );
-}
+});
