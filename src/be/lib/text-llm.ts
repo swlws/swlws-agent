@@ -9,29 +9,18 @@ export interface LLMOptions {
 }
 
 function createClient(): OpenAI {
-  const apiKey = process.env.SWLWS_OPENAI_API_KEY;
-  if (!apiKey) throw new Error("SWLWS_OPENAI_API_KEY is not set");
+  const apiKey = process.env.SWLWS_TEXT_LLM_API_KEY;
+  if (!apiKey) throw new Error("SWLWS_TEXT_LLM_API_KEY is not set");
 
   return new OpenAI({
     apiKey,
-    baseURL: process.env.SWLWS_OPENAI_BASE_URL,
-  });
-}
-
-function createSiliconFlowClient(): OpenAI {
-  const apiKey = process.env.SWLWS_SILICONFLOW_API_KEY;
-  if (!apiKey) throw new Error("SWLWS_SILICONFLOW_API_KEY is not set");
-
-  return new OpenAI({
-    apiKey,
-    baseURL: process.env.SWLWS_SILICONFLOW_BASE_URL,
+    baseURL: process.env.SWLWS_TEXT_LLM_BASE_URL,
   });
 }
 
 function resolveModel(explicitModel?: string): string {
-  // `OPENAI_MODE` is kept for backwards compatibility with current `.env.local`.
-  const model = explicitModel || process.env.SWLWS_OPENAI_MODEL;
-  if (!model) throw new Error("SWLWS_OPENAI_MODEL is not set");
+  const model = explicitModel || process.env.SWLWS_TEXT_LLM_MODEL;
+  if (!model) throw new Error("SWLWS_TEXT_LLM_MODEL is not set");
 
   return model;
 }
@@ -96,28 +85,4 @@ export async function prompt(
   if (systemPrompt) messages.push({ role: "system", content: systemPrompt });
   messages.push({ role: "user", content: userMessage });
   return chat(messages, options);
-}
-
-/**
- * Image generation
- */
-export async function generateImage(
-  prompt: string,
-  options: { model?: string } = {},
-): Promise<string> {
-  const client = createSiliconFlowClient();
-  const model = options.model || process.env.SWLWS_SILICONFLOW_IMAGE_MODEL;
-  if (!model) throw new Error("SWLWS_SILICONFLOW_IMAGE_MODEL is not set");
-
-  const response = await client.images.generate({
-    model,
-    prompt,
-    response_format: "url",
-  });
-
-  if (!response.data || response.data.length === 0) {
-    throw new Error("No image data returned from SiliconFlow");
-  }
-
-  return response.data[0].url ?? "";
 }

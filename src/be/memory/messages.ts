@@ -1,5 +1,5 @@
 import type { ConversationData, ChatMessage } from "@/be/session";
-import type { Message as LlmMessage } from "@/be/lib/llm";
+import type { Message as LlmMessage } from "@/be/lib/text-llm";
 
 export type { ChatMessage };
 

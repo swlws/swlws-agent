@@ -1,4 +1,4 @@
-import { chat } from "@/be/lib/llm";
+import { chat } from "@/be/lib/text-llm";
 import type { ConversationData, Persona, PersonaData } from "@/be/session";
 
 const PERSONA_PROMPT = `你是一个洞察力敏锐、充满创意的用户画像分析师。请根据对话记忆与消息，深度提炼用户的人物画像。

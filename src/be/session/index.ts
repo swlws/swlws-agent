@@ -1,6 +1,6 @@
 import fs from "fs/promises";
 import path from "path";
-import { Message as ChatMessage } from "@/be/lib/llm";
+import { Message as ChatMessage } from "@/be/lib/text-llm";
 
 export type { ChatMessage };
 

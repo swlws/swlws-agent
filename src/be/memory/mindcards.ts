@@ -1,4 +1,4 @@
-import { chat } from "@/be/lib/llm";
+import { chat } from "@/be/lib/text-llm";
 import type { ConversationData, Persona, MindCard, MindCardsData } from "@/be/session";
 
 const MINDCARDS_PROMPT = `你是一个对话引导专家。根据用户的人物画像和当前对话上下文，生成 16 张心智卡片，帮助用户快速开始有价值的对话。

@@ -1,7 +1,5 @@
-import { chat } from "@/be/lib/llm";
+import { chat } from "@/be/lib/text-llm";
 import type { ConversationData, Memory, ChatMessage } from "@/be/session";
-
-const KEEP_RECENT = 4;
 
 const EXTRACT_PROMPT = `你是一个对话记忆提取助手。请从新增对话中提取关键信息，与现有记忆合并更新后输出完整记忆列表。
 
@@ -56,7 +54,10 @@ export interface CompactMemoriesResult {
  * When messages exceed the window, compress overflow into typed memories.
  * No-op when within the window.
  */
-export async function compactMemories(conv: ConversationData, keepRecent = 4): Promise<CompactMemoriesResult> {
+export async function compactMemories(
+  conv: ConversationData,
+  keepRecent = 4,
+): Promise<CompactMemoriesResult> {
   if (conv.messages.length <= keepRecent) {
     return { conv, memoriesChanged: false };
   }
@@ -65,6 +66,7 @@ export async function compactMemories(conv: ConversationData, keepRecent = 4): P
   const recent = conv.messages.slice(-keepRecent);
   const memories = await extractMemories(conv.memories, overflow);
 
-  const memoriesChanged = JSON.stringify(memories) !== JSON.stringify(conv.memories);
+  const memoriesChanged =
+    JSON.stringify(memories) !== JSON.stringify(conv.memories);
   return { conv: { ...conv, memories, messages: recent }, memoriesChanged };
 }

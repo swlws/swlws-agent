@@ -1,4 +1,5 @@
-import { chatStream, generateImage, Message } from "@/be/lib/llm";
+import { chatStream, Message } from "@/be/lib/text-llm";
+import { generateImage } from "@/be/lib/image-gen";
 import {
   buildContextMessages,
   appendMessages,
