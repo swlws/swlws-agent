@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import {
   type AppSettings,
-  fetchSettings,
-  persistSettings,
-} from "@/fe/lib/settings";
+  getSettings,
+  saveSettings,
+} from "@/fe/apis/settings";
 import { Dialog } from "@/fe/components/Dialog";
 import { FormRow } from "@/fe/components/FormRow";
 import { Select } from "@/fe/components/Select";
@@ -35,7 +35,7 @@ export function SettingsPanel({ isOpen, onClose, onSave }: SettingsPanelProps) {
 
   useEffect(() => {
     if (!isOpen) return;
-    fetchSettings().then((s) => {
+    getSettings().then((s) => {
       setForm(s);
       setDefaults(s);
     });
@@ -44,7 +44,7 @@ export function SettingsPanel({ isOpen, onClose, onSave }: SettingsPanelProps) {
   async function handleSave() {
     setSaving(true);
     try {
-      const saved = await persistSettings(form);
+      const saved = await saveSettings(form);
       onSave(saved);
       onClose();
     } finally {

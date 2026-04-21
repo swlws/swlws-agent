@@ -1,13 +1,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { getIcon } from "@/fe/lib/icons";
-import { fetchWithUid } from "@/fe/lib/api";
+import { getMindCards, type MindCard } from "@/fe/apis/mindcards";
 import { ArrowRightIcon, RefreshIcon } from "@/fe/components/icons";
-
-interface MindCard {
-  title: string;
-  desc: string;
-  prompt: string;
-}
 
 interface MindCardsProps {
   onSelect: (prompt: string) => void;
@@ -19,9 +13,8 @@ export function MindCards({ onSelect }: MindCardsProps) {
 
   const fetchCards = useCallback(() => {
     setIsRefreshing(true);
-    fetchWithUid("/api/mindcards")
-      .then((r) => r.json())
-      .then((data: MindCard[]) => {
+    getMindCards()
+      .then((data) => {
         setCards(data);
         setTimeout(() => setIsRefreshing(false), 500);
       })

@@ -1,18 +1,7 @@
 import { useEffect, useState } from "react";
 import { LoadingDots } from "@/fe/components/LoadingDots";
 import { Drawer } from "@/fe/components/Drawer";
-import { fetchWithUid } from "@/fe/lib/api";
-
-interface PersonaTrait {
-  dimension: string;
-  value: string;
-}
-
-interface Persona {
-  summary: string;
-  traits: PersonaTrait[];
-  updatedAt: string;
-}
+import { getPersona, type Persona } from "@/fe/apis/persona";
 
 interface PersonaPanelProps {
   isOpen: boolean;
@@ -26,9 +15,8 @@ export function PersonaPanel({ isOpen, onClose }: PersonaPanelProps) {
   useEffect(() => {
     if (!isOpen) return;
     setLoading(true);
-    fetchWithUid("/api/persona")
-      .then((r) => r.json())
-      .then((data: Persona | null) => setPersona(data))
+    getPersona()
+      .then((data) => setPersona(data))
       .finally(() => setLoading(false));
   }, [isOpen]);
 

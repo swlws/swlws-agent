@@ -1,4 +1,4 @@
-import { CloseButton } from "@/fe/components/PanelHeader";
+import { CloseButton } from "@/fe/components/CloseButton";
 
 interface DrawerProps {
   isOpen: boolean;

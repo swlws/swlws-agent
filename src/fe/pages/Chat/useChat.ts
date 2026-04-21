@@ -6,14 +6,10 @@ import {
   createNewConversationId,
   setConversationId,
 } from "@/fe/lib/uid";
-import { fetchWithUid } from "@/fe/lib/api";
+import { getConversations, getMemory, type ConversationMeta } from "@/fe/apis/conversations";
+import { abortChat } from "@/fe/apis/chat";
 
-export interface ConversationMeta {
-  conversationId: string;
-  title: string;
-  createdAt: string;
-  updatedAt: string;
-}
+export type { ConversationMeta };
 
 export function useChat() {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -30,8 +26,7 @@ export function useChat() {
   }, []);
 
   const loadConversationList = useCallback(async () => {
-    const res = await fetchWithUid("/api/conversations");
-    const list: ConversationMeta[] = await res.json();
+    const list = await getConversations();
     setConversations(list);
   }, []);
 
@@ -42,10 +37,7 @@ export function useChat() {
     setConversationId(cid);
     setConversationIdState(cid);
 
-    const res = await fetchWithUid("/api/memory", {
-      conversationId: cid,
-    });
-    const cached: ChatMessage[] = await res.json();
+    const cached = await getMemory(cid);
     setMessages(cached);
   }, []);
 
@@ -62,11 +54,7 @@ export function useChat() {
     sseRef.current?.close();
     sseRef.current = null;
     setLoading(false);
-    fetch("/api/chat/abort", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ uid: getUid() }),
-    }).catch(() => {});
+    abortChat();
   }, []);
 
   const sendText = useCallback(
