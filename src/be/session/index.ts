@@ -60,17 +60,25 @@ export interface MindCardsData {
 const SESSIONS_DIR = path.join(process.cwd(), ".sessions");
 
 function userDir(uid: string): string {
-  return path.join(SESSIONS_DIR, uid);
+  return path.join(SESSIONS_DIR, "user", uid);
+}
+
+function conversationDir(uid: string): string {
+  return path.join(userDir(uid), "conversation");
 }
 
 async function ensureUserDir(uid: string): Promise<void> {
   await fs.mkdir(userDir(uid), { recursive: true });
 }
 
+async function ensureConversationDir(uid: string): Promise<void> {
+  await fs.mkdir(conversationDir(uid), { recursive: true });
+}
+
 // ─── Conversation ───────────────────────────────────────────────────────────
 
 export async function loadConversation(uid: string, conversationId: string): Promise<ConversationData> {
-  const file = path.join(userDir(uid), `${conversationId}.json`);
+  const file = path.join(conversationDir(uid), `${conversationId}.json`);
   try {
     const raw = await fs.readFile(file, "utf-8");
     return JSON.parse(raw) as ConversationData;
@@ -81,19 +89,18 @@ export async function loadConversation(uid: string, conversationId: string): Pro
 }
 
 export async function saveConversation(uid: string, conversationId: string, data: ConversationData): Promise<void> {
-  await ensureUserDir(uid);
-  const file = path.join(userDir(uid), `${conversationId}.json`);
+  await ensureConversationDir(uid);
+  const file = path.join(conversationDir(uid), `${conversationId}.json`);
   await fs.writeFile(file, JSON.stringify(data, null, 2), "utf-8");
 }
 
 export async function listConversations(uid: string): Promise<ConversationMeta[]> {
-  const dir = userDir(uid);
+  const dir = conversationDir(uid);
   try {
     const entries = await fs.readdir(dir);
     const metas: ConversationMeta[] = [];
     for (const entry of entries) {
       if (!entry.endsWith(".json")) continue;
-      if (entry === "persona.json" || entry === "mindcards.json" || entry === "setting.json") continue;
       const conversationId = entry.slice(0, -5);
       try {
         const raw = await fs.readFile(path.join(dir, entry), "utf-8");
