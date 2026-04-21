@@ -4,6 +4,7 @@ export { Persona as PersonaIcon } from "@/fe/assets/icons/Persona";
 export { Settings as SettingsIcon } from "@/fe/assets/icons/Settings";
 export { Close as CloseIcon } from "@/fe/assets/icons/Close";
 export { ArrowRight as ArrowRightIcon } from "@/fe/assets/icons/ArrowRight";
+export { ArrowDown as ArrowDownIcon } from "@/fe/assets/icons/ArrowDown";
 export { Refresh as RefreshIcon } from "@/fe/assets/icons/Refresh";
 export { CopySuccess as CopySuccessIcon } from "@/fe/assets/icons/CopySuccess";
 export { CopyClipboard as CopyClipboardIcon } from "@/fe/assets/icons/CopyClipboard";
