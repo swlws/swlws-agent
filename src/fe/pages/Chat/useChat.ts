@@ -6,6 +6,7 @@ import {
   createNewConversationId,
   setConversationId,
 } from "@/fe/lib/uid";
+import { fetchWithUid } from "@/fe/lib/api";
 
 export interface ConversationMeta {
   conversationId: string;
@@ -29,9 +30,7 @@ export function useChat() {
   }, []);
 
   const loadConversationList = useCallback(async () => {
-    const res = await fetch(
-      `/api/conversations?uid=${encodeURIComponent(getUid())}`,
-    );
+    const res = await fetchWithUid("/api/conversations");
     const list: ConversationMeta[] = await res.json();
     setConversations(list);
   }, []);
@@ -43,9 +42,9 @@ export function useChat() {
     setConversationId(cid);
     setConversationIdState(cid);
 
-    const res = await fetch(
-      `/api/memory?uid=${encodeURIComponent(getUid())}&conversationId=${encodeURIComponent(cid)}`,
-    );
+    const res = await fetchWithUid("/api/memory", {
+      conversationId: cid,
+    });
     const cached: ChatMessage[] = await res.json();
     setMessages(cached);
   }, []);

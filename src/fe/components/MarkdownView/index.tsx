@@ -3,6 +3,7 @@
 import { useState, useCallback, useMemo, memo } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import { CopySuccessIcon, CopyClipboardIcon } from "@/fe/components/icons";
 
 function extractText(node: React.ReactNode): string {
   if (typeof node === "string") return node;
@@ -52,32 +53,9 @@ function CodeBlock({ children }: { children: React.ReactNode }) {
         className="absolute right-2 top-2 rounded-md p-1.5 text-gray-500 opacity-0 transition-all group-hover:opacity-100 hover:bg-white/10 hover:text-gray-200"
       >
         {copied ? (
-          <svg
-            width="14"
-            height="14"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <polyline points="20 6 9 17 4 12" />
-          </svg>
+          <CopySuccessIcon />
         ) : (
-          <svg
-            width="14"
-            height="14"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <rect x="9" y="9" width="13" height="13" rx="2" />
-            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
-          </svg>
+          <CopyClipboardIcon />
         )}
       </button>
       {children}

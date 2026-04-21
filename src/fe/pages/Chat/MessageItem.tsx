@@ -1,5 +1,6 @@
 import { memo } from "react";
 import MarkdownView from "@/fe/components/MarkdownView";
+import { LoadingDots } from "@/fe/components/LoadingDots";
 import { ChatMessage } from "@/fe/lib/chatSseClient";
 
 interface MessageItemProps {
@@ -32,11 +33,7 @@ export const MessageItem = memo(function MessageItem({
         }`}
       >
         {showLoader ? (
-          <span className="inline-flex items-center gap-1 py-1">
-            <span className="h-2 w-2 animate-bounce rounded-full bg-gray-400 [animation-delay:0ms]" />
-            <span className="h-2 w-2 animate-bounce rounded-full bg-gray-400 [animation-delay:150ms]" />
-            <span className="h-2 w-2 animate-bounce rounded-full bg-gray-400 [animation-delay:300ms]" />
-          </span>
+          <LoadingDots className="items-center gap-1 py-1" />
         ) : (
           <MarkdownView content={message.content} />
         )}

@@ -1,6 +1,7 @@
 import { useEffect, useState, useCallback } from "react";
-import { getUid } from "@/fe/lib/uid";
 import { getIcon } from "@/fe/lib/icons";
+import { fetchWithUid } from "@/fe/lib/api";
+import { ArrowRightIcon, RefreshIcon } from "@/fe/components/icons";
 
 interface MindCard {
   title: string;
@@ -18,7 +19,7 @@ export function MindCards({ onSelect }: MindCardsProps) {
 
   const fetchCards = useCallback(() => {
     setIsRefreshing(true);
-    fetch(`/api/mindcards?uid=${encodeURIComponent(getUid())}`)
+    fetchWithUid("/api/mindcards")
       .then((r) => r.json())
       .then((data: MindCard[]) => {
         setCards(data);
@@ -50,19 +51,7 @@ export function MindCards({ onSelect }: MindCardsProps) {
                 </p>
               </div>
               <div className="shrink-0 rounded-full bg-gray-50 p-1 opacity-0 transition-opacity group-hover:opacity-100 dark:bg-white/5">
-                <svg
-                  className="h-3.5 w-3.5 text-gray-400"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M14 5l7 7m0 0l-7 7m7-7H3"
-                  />
-                </svg>
+                <ArrowRightIcon className="h-3.5 w-3.5 text-gray-400" />
               </div>
             </div>
             <p className="text-xs leading-relaxed text-gray-500 dark:text-gray-400 line-clamp-2">
@@ -77,21 +66,7 @@ export function MindCards({ onSelect }: MindCardsProps) {
           disabled={isRefreshing}
           className="flex items-center gap-1.5 rounded-full bg-gray-50 px-4 py-2 text-xs font-medium text-gray-500 transition-all hover:bg-gray-100 hover:text-gray-700 disabled:opacity-50 dark:bg-white/5 dark:text-gray-400 dark:hover:bg-white/10 dark:hover:text-gray-200"
         >
-          <svg
-            className={`h-3.5 w-3.5 ${isRefreshing ? "animate-spin" : ""}`}
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8" />
-            <path d="M21 3v5h-5" />
-            <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16" />
-            <path d="M8 16H3v5" />
-          </svg>
+          <RefreshIcon className={`h-3.5 w-3.5 ${isRefreshing ? "animate-spin" : ""}`} />
           {isRefreshing ? "正在刷新..." : "换一批灵感"}
         </button>
       </div>
