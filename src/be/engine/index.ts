@@ -18,7 +18,7 @@ import {
   loadUserSettings,
   ConversationData,
 } from "@/be/session";
-import { loadDefaultSettings, mergeSettings } from "@/be/config/settings";
+import { loadDefaultSettings, mergeSettings, type AgentMode } from "@/be/config/settings";
 import { modeRunners, type SseEvent } from "./runners";
 
 export type { SseEvent };
@@ -28,7 +28,7 @@ export interface QueryParams {
   conversationId: string;
   content: string;
   /** 若传入则覆盖用户设置中的 agentMode */
-  agentMode?: "direct" | "plan-and-solve";
+  agentMode?: AgentMode;
 }
 
 export interface QueryHandlers {

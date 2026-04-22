@@ -1,6 +1,5 @@
 import { useState, useEffect, useCallback, memo } from "react";
-
-type AgentMode = "direct" | "plan-and-solve";
+import type { AgentMode } from "@/fe/apis/settings";
 
 interface InputBarProps {
   onSend: (value: string) => void;
@@ -63,6 +62,7 @@ export const InputBar = memo(function InputBar({
           >
             <option value="direct">直接输出</option>
             <option value="plan-and-solve">规划后执行</option>
+            <option value="react">ReAct</option>
           </select>
           {loading ? (
             <button

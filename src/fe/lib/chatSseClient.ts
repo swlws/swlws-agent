@@ -1,3 +1,5 @@
+import type { AgentMode } from "@/fe/apis/settings";
+
 export type ChatMessage = { role: "user" | "assistant"; content: string };
 
 export interface SseEvent {
@@ -9,7 +11,7 @@ type ConnectChatSseParams = {
   uid: string;
   conversationId: string;
   content: string;
-  agentMode?: "direct" | "plan-and-solve";
+  agentMode?: AgentMode;
   onToken: (token: string) => void;
   onDone?: () => void;
   onError?: (error: Error) => void;

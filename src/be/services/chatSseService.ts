@@ -1,4 +1,5 @@
 import { QueryEngine } from "@/be/engine";
+import type { AgentMode } from "@/be/config/settings";
 import { registerAbort, releaseAbort } from "./abortRegistry";
 
 const engine = new QueryEngine();
@@ -7,7 +8,7 @@ function createSSEStream(
   uid: string,
   conversationId: string,
   content: string,
-  agentMode?: "direct" | "plan-and-solve",
+  agentMode?: AgentMode,
 ) {
   const signal = registerAbort(uid);
   const encoder = new TextEncoder();
@@ -50,7 +51,7 @@ export function createChatSseResponse(
   uid: string,
   conversationId: string,
   content: string,
-  agentMode?: "direct" | "plan-and-solve",
+  agentMode?: AgentMode,
 ) {
   return createSSEStream(uid, conversationId, content, agentMode);
 }

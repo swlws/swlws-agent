@@ -1,6 +1,8 @@
 import fs from "fs/promises";
 import path from "path";
 
+export type AgentMode = "direct" | "plan-and-solve" | "react";
+
 export interface AppSettings {
   /** 会话消息存储上限（条），超出时从头部截断，不触发 LLM */
   maxMessagesCount: number;
@@ -12,8 +14,8 @@ export interface AppSettings {
   mindCardsDisplayCount: number;
   /** 心智卡片更新间隔（小时） */
   mindCardsUpdateHours: number;
-  /** 智能体执行模式：direct = 直接输出，plan-and-solve = 规划后逐步执行 */
-  agentMode: "direct" | "plan-and-solve";
+  /** 智能体执行模式：direct = 直接输出，plan-and-solve = 规划后逐步执行，react = 推理与行动交替 */
+  agentMode: AgentMode;
 }
 
 const DEFAULT_CONFIG_PATH = path.join(

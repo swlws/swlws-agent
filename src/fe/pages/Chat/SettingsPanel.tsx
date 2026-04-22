@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import {
   type AppSettings,
+  type AgentMode,
   getSettings,
   saveSettings,
 } from "@/fe/apis/settings";
@@ -24,10 +25,11 @@ const DEFAULT_FORM: AppSettings = {
   agentMode: "direct",
 };
 
-const AGENT_MODE_OPTIONS: Array<"direct" | "plan-and-solve"> = ["direct", "plan-and-solve"];
-const AGENT_MODE_LABELS: Record<string, string> = {
+const AGENT_MODE_OPTIONS: AgentMode[] = ["direct", "plan-and-solve", "react"];
+const AGENT_MODE_LABELS: Record<AgentMode, string> = {
   direct: "直接输出",
   "plan-and-solve": "规划后执行",
+  react: "ReAct",
 };
 
 const HOUR_OPTIONS = [1, 2, 4, 8, 12, 24];
@@ -91,7 +93,9 @@ export function SettingsPanel({ isOpen, onClose, onSave }: SettingsPanelProps) {
             hint={
               form.agentMode === "direct"
                 ? "直接生成回答，响应更快"
-                : "先规划执行步骤，再逐步完成，适合复杂任务"
+                : form.agentMode === "react"
+                  ? "推理与工具调用交替进行，适合需要多步推断的任务"
+                  : "先规划执行步骤，再逐步完成，适合复杂任务"
             }
           >
             <Select

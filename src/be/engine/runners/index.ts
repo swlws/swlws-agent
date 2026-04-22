@@ -2,6 +2,7 @@ import type { Message } from "@/be/lib/text-llm";
 import type { SseEvent } from "./plan-and-solve/solver";
 import { directRunner } from "./direct";
 import { planAndSolveRunner } from "./plan-and-solve";
+import { reactRunner } from "./react";
 
 export type { SseEvent };
 
@@ -25,4 +26,5 @@ export interface ModeRunner {
 export const modeRunners = new Map<string, ModeRunner>([
   ["direct", directRunner],
   ["plan-and-solve", planAndSolveRunner],
+  ["react", reactRunner],
 ]);

@@ -8,17 +8,17 @@ import {
 } from "@/fe/lib/uid";
 import { getConversations, getMemory, type ConversationMeta } from "@/fe/apis/conversations";
 import { abortChat } from "@/fe/apis/chat";
+import type { AgentMode } from "@/fe/apis/settings";
 
-export type { ConversationMeta };
-
-type AgentMode = "direct" | "plan-and-solve";
+export type { ConversationMeta, AgentMode };
 
 const AGENT_MODE_KEY = "agent_mode";
+const VALID_MODES = new Set<AgentMode>(["direct", "plan-and-solve", "react"]);
 
 function loadAgentMode(): AgentMode {
   if (typeof window === "undefined") return "direct";
-  const stored = localStorage.getItem(AGENT_MODE_KEY);
-  return stored === "plan-and-solve" ? "plan-and-solve" : "direct";
+  const stored = localStorage.getItem(AGENT_MODE_KEY) as AgentMode | null;
+  return stored && VALID_MODES.has(stored) ? stored : "direct";
 }
 
 function saveAgentMode(mode: AgentMode) {
