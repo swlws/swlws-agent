@@ -1,9 +1,6 @@
 import type { ConversationMeta } from "./useChat";
 import { NavIconButton } from "@/fe/components/NavIconButton";
-import {
-  NewChatIcon,
-  SettingsIcon,
-} from "@/fe/components/icons";
+import { NewChatIcon, SettingsIcon } from "@/fe/components/icons";
 
 interface ConversationListProps {
   open: boolean;
@@ -91,7 +88,7 @@ export function ConversationList({
       </div>
 
       {/* 下方工具按钮区 */}
-      <div className="flex h-[91px] flex-col justify-center gap-1 border-t border-gray-200 px-2 dark:border-[#2f2f2f]">
+      <div className="flex h-[66px] flex-col justify-center gap-1 border-t border-gray-200 px-2 dark:border-[#2f2f2f]">
         {/* 设置按钮 */}
         <NavIconButton
           onClick={onOpenSettings}
