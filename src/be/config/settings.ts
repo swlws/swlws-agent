@@ -26,11 +26,11 @@ const DEFAULT_CONFIG_PATH = path.join(
 let _defaultCache: AppSettings | null = null;
 
 export async function loadDefaultSettings(): Promise<AppSettings> {
-  if (_defaultCache) return _defaultCache;
+  if (_defaultCache) return { ..._defaultCache };
   try {
     const raw = await fs.readFile(DEFAULT_CONFIG_PATH, "utf-8");
     _defaultCache = JSON.parse(raw) as AppSettings;
-    return _defaultCache;
+    return { ..._defaultCache };
   } catch {
     // 文件缺失时的硬编码兜底
     _defaultCache = {
@@ -41,7 +41,7 @@ export async function loadDefaultSettings(): Promise<AppSettings> {
       mindCardsUpdateHours: 4,
       agentMode: "direct",
     };
-    return _defaultCache;
+    return { ..._defaultCache };
   }
 }
 

@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
-import { abortByUid } from "@/be/services/abortRegistry";
+import { abortByConversation } from "@/be/services/abortRegistry";
 
 export const runtime = "nodejs";
 
 export async function POST(req: NextRequest) {
-  const { uid } = (await req.json()) as { uid?: string };
-  abortByUid(uid ?? "anonymous");
+  const { uid, conversationId } = (await req.json()) as { uid?: string; conversationId?: string };
+  abortByConversation(uid ?? "anonymous", conversationId ?? "");
   return NextResponse.json({ ok: true });
 }

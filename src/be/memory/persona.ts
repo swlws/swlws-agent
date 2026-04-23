@@ -26,29 +26,23 @@ const PERSONA_PROMPT = `你是一个洞察力敏锐、充满创意的用户画�
 输出格式：
 {"summary":"一句话描述","traits":[{"dimension":"表达风格","value":"..."}]}`;
 
-/** 从所有会话中提炼摘要文本供画像使用 */
-function buildSummaryText(conversations: ConversationData[]): string {
-  const parts: string[] = [];
-  for (const conv of conversations) {
-    if (conv.memories.length === 0 && conv.messages.length === 0) continue;
-    const memText = conv.memories.map((m) => `[${m.type}] ${m.description}：${m.content}`).join("\n");
-    const msgText = conv.messages
-      .slice(-4)
-      .map((m) => `${m.role === "user" ? "用户" : "助手"}：${m.content}`)
-      .join("\n");
-    if (memText || msgText) {
-      parts.push([memText, msgText].filter(Boolean).join("\n"));
-    }
-  }
-  return parts.join("\n\n---\n\n");
+/** 从当前会话中提炼摘要文本供画像使用 */
+function buildSummaryText(conv: ConversationData): string {
+  if (conv.memories.length === 0 && conv.messages.length === 0) return "";
+  const memText = conv.memories.map((m) => `[${m.type}] ${m.description}：${m.content}`).join("\n");
+  const msgText = conv.messages
+    .slice(-4)
+    .map((m) => `${m.role === "user" ? "用户" : "助手"}：${m.content}`)
+    .join("\n");
+  return [memText, msgText].filter(Boolean).join("\n");
 }
 
-export async function generatePersona(conversations: ConversationData[]): Promise<Persona> {
-  const summaryText = buildSummaryText(conversations);
+export async function generatePersona(conv: ConversationData): Promise<Persona> {
+  const summaryText = buildSummaryText(conv);
 
   const raw = await chat([
     { role: "system", content: PERSONA_PROMPT },
-    { role: "user", content: `所有会话摘要：\n${summaryText}` },
+    { role: "user", content: `会话摘要：\n${summaryText}` },
   ]);
 
   try {
@@ -70,15 +64,13 @@ export async function generatePersona(conversations: ConversationData[]): Promis
  */
 export async function refreshPersona(
   uid: string,
-  conversations: ConversationData[],
+  conv: ConversationData,
   currentData: PersonaData,
   ttlHours = 4,
 ): Promise<PersonaData> {
   const PERSONA_TTL_MS = ttlHours * 60 * 60 * 1000;
   // 无内容时，人物画像为空
-  const hasContent = conversations.some(
-    (c) => c.memories.length > 0 || c.messages.length > 0,
-  );
+  const hasContent = conv.memories.length > 0 || conv.messages.length > 0;
   if (!hasContent) {
     return { persona: null, updatedAt: new Date().toISOString() };
   }
@@ -90,7 +82,7 @@ export async function refreshPersona(
   }
 
   try {
-    const persona = await generatePersona(conversations);
+    const persona = await generatePersona(conv);
     return { persona, updatedAt: new Date().toISOString() };
   } catch (err) {
     console.error("[persona] failed to generate:", err);

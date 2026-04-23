@@ -2,6 +2,7 @@ import { QueryEngine } from "@/be/engine";
 import type { AgentMode } from "@/be/config/settings";
 import { registerAbort, releaseAbort } from "./abortRegistry";
 
+
 const engine = new QueryEngine();
 
 function createSSEStream(
@@ -10,7 +11,7 @@ function createSSEStream(
   content: string,
   agentMode?: AgentMode,
 ) {
-  const signal = registerAbort(uid);
+  const signal = registerAbort(uid, conversationId);
   const encoder = new TextEncoder();
 
   const stream = new ReadableStream({
@@ -31,7 +32,7 @@ function createSSEStream(
           signal,
         );
       } finally {
-        releaseAbort(uid);
+        releaseAbort(uid, conversationId);
         controller.close();
       }
     },

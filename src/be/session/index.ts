@@ -5,6 +5,26 @@ import { SESSIONS_DIR } from "@/be/config/paths";
 
 export type { ChatMessage };
 
+// ─── Write Lock ──────────────────────────────────────────────────────────────
+
+/** 每个文件路径对应一条串行写入队列，防止并发写覆盖 */
+const writeLocks = new Map<string, Promise<void>>();
+
+async function lockedWrite(filePath: string, data: string): Promise<void> {
+  const prev = writeLocks.get(filePath) ?? Promise.resolve();
+  let resolveCurrent!: () => void;
+  const current = new Promise<void>((r) => { resolveCurrent = r; });
+  writeLocks.set(filePath, current);
+  try {
+    await prev;
+    await fs.writeFile(filePath, data, "utf-8");
+  } finally {
+    resolveCurrent();
+    // 队列已清空时释放 Map 条目，避免内存泄漏
+    if (writeLocks.get(filePath) === current) writeLocks.delete(filePath);
+  }
+}
+
 export type MemoryType = "context" | "preference" | "decision" | "fact";
 
 export interface Memory {
@@ -96,7 +116,7 @@ export async function loadConversation(uid: string, conversationId: string): Pro
 export async function saveConversation(uid: string, conversationId: string, data: ConversationData): Promise<void> {
   await ensureConversationDir(uid);
   const file = path.join(conversationDir(uid), `${conversationId}.json`);
-  await fs.writeFile(file, JSON.stringify(data, null, 2), "utf-8");
+  await lockedWrite(file, JSON.stringify(data, null, 2));
 }
 
 export async function listConversations(uid: string): Promise<ConversationMeta[]> {
@@ -141,7 +161,7 @@ export async function loadPersonaData(uid: string): Promise<PersonaData> {
 export async function savePersonaData(uid: string, data: PersonaData): Promise<void> {
   await ensureUserDir(uid);
   const file = path.join(userDir(uid), "persona.json");
-  await fs.writeFile(file, JSON.stringify(data, null, 2), "utf-8");
+  await lockedWrite(file, JSON.stringify(data, null, 2));
 }
 
 // ─── MindCards ──────────────────────────────────────────────────────────────
@@ -159,7 +179,7 @@ export async function loadMindCardsData(uid: string): Promise<MindCardsData> {
 export async function saveMindCardsData(uid: string, data: MindCardsData): Promise<void> {
   await ensureUserDir(uid);
   const file = path.join(userDir(uid), "mindcards.json");
-  await fs.writeFile(file, JSON.stringify(data, null, 2), "utf-8");
+  await lockedWrite(file, JSON.stringify(data, null, 2));
 }
 
 // ─── User Settings ───────────────────────────────────────────────────────────
@@ -177,5 +197,5 @@ export async function loadUserSettings(uid: string): Promise<Partial<import("@/b
 export async function saveUserSettings(uid: string, settings: Partial<import("@/be/config/settings").AppSettings>): Promise<void> {
   await ensureUserDir(uid);
   const file = path.join(userDir(uid), "setting.json");
-  await fs.writeFile(file, JSON.stringify(settings, null, 2), "utf-8");
+  await lockedWrite(file, JSON.stringify(settings, null, 2));
 }

@@ -9,8 +9,6 @@ import {
 import {
   loadConversation,
   saveConversation,
-  listConversations,
-  loadConversation as loadConv,
   loadPersonaData,
   savePersonaData,
   loadMindCardsData,
@@ -76,6 +74,7 @@ export class QueryEngine {
 
       await this._updateGlobalKnowledge(
         uid,
+        conv,
         settings.personaUpdateHours,
         settings.mindCardsUpdateHours,
       );
@@ -110,18 +109,14 @@ export class QueryEngine {
 
   private async _updateGlobalKnowledge(
     uid: string,
+    conv: ConversationData,
     personaUpdateHours: number,
     mindCardsUpdateHours: number,
   ) {
-    const metas = await listConversations(uid);
-    const allConversations = await Promise.all(
-      metas.map((m) => loadConv(uid, m.conversationId)),
-    );
-
     const personaData = await loadPersonaData(uid);
     const newPersonaData = await refreshPersona(
       uid,
-      allConversations,
+      conv,
       personaData,
       personaUpdateHours,
     );
@@ -129,7 +124,7 @@ export class QueryEngine {
 
     const mindCardsData = await loadMindCardsData(uid);
     const newMindCardsData = await refreshMindCards(
-      allConversations,
+      conv,
       newPersonaData.persona,
       mindCardsData,
       mindCardsUpdateHours,
