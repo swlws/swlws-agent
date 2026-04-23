@@ -1,0 +1,46 @@
+src/be/engine/tools/mcp/config.ts
+  2733c2e73e6c4e41 1-30
+src/be/engine/tools/mcp/adapter.ts
+  2733c2e73e6c4e41 1-41
+src/be/engine/tools/mcp/index.ts
+  2733c2e73e6c4e41 1-72
+src/be/config/paths.ts
+  2733c2e73e6c4e41 1-10
+package.json
+  2733c2e73e6c4e41 12
+src/be/engine/tools/index.ts
+  2733c2e73e6c4e41 3,17-33,36,40,55-62
+src/be/session/index.ts
+  2733c2e73e6c4e41 4
+src/instrumentation.ts
+  2733c2e73e6c4e41 1-20
+mcp.example.json
+  2733c2e73e6c4e41 1-9
+src/be/engine/tools/mcp/client.ts
+  2733c2e73e6c4e41 1-78
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.3.2",
+  "base_commit_sha": "a69cab9f6afdb00f8c9f2d8e7832f2dd26bf485d",
+  "prompts": {
+    "2733c2e73e6c4e41": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "213e825f-c2d6-4c21-892c-dfffa55beffc",
+        "model": "mcs-5"
+      },
+      "human_author": "swlws",
+      "messages": [],
+      "total_additions": 299,
+      "total_deletions": 13,
+      "accepted_lines": 290,
+      "overriden_lines": 0
+    }
+  },
+  "humans": {
+    "h_9054b55ea37caa": {
+      "author": "swlws"
+    }
+  }
+}
