@@ -1,6 +1,6 @@
 import type OpenAI from "openai";
 import { imageGenerateTool } from "./imageGenerate";
-import { webSearchTool } from "./webSearch";
+import { mcpManager, parseMcpToolName } from "./mcp";
 
 export interface Tool {
   name: string;
@@ -14,15 +14,30 @@ export interface ToolResult {
   isError: boolean;
 }
 
-// const registry: Tool[] = [imageGenerateTool, webSearchTool];
-const registry: Tool[] = [imageGenerateTool];
+/** 静态工具（随进程启动固定注册） */
+const staticTools: Tool[] = [imageGenerateTool];
+
+/** 动态工具（MCP 等在运行时注册） */
+let dynamicTools: Tool[] = [];
+
+export function registerTools(tools: Tool[]): void {
+  dynamicTools.push(...tools);
+}
+
+export function clearDynamicTools(): void {
+  dynamicTools = [];
+}
+
+function getAllTools(): Tool[] {
+  return [...staticTools, ...dynamicTools];
+}
 
 export function getToolRegistry(): Tool[] {
-  return registry;
+  return getAllTools();
 }
 
 export function getToolDefinitions(): OpenAI.Chat.ChatCompletionTool[] {
-  return registry.map((tool) => ({
+  return getAllTools().map((tool) => ({
     type: "function" as const,
     function: {
       name: tool.name,
@@ -37,7 +52,14 @@ export async function executeTool(
   args: Record<string, unknown>,
   signal?: AbortSignal,
 ): Promise<ToolResult> {
-  const tool = registry.find((t) => t.name === name);
+  // MCP 工具路由
+  const mcp = parseMcpToolName(name);
+  if (mcp) {
+    return mcpManager.execute(mcp.serverName, mcp.toolName, args, signal);
+  }
+
+  // 本地静态/动态工具
+  const tool = getAllTools().find((t) => t.name === name);
   if (!tool) {
     return { content: `[未知工具: ${name}]`, isError: true };
   }

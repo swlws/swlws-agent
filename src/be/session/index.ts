@@ -1,6 +1,7 @@
 import fs from "fs/promises";
 import path from "path";
 import { Message as ChatMessage } from "@/be/lib/text-llm";
+import { SESSIONS_DIR } from "@/be/config/paths";
 
 export type { ChatMessage };
 
@@ -59,7 +60,6 @@ export interface MindCardsData {
   updatedAt: string;
 }
 
-const SESSIONS_DIR = path.join(process.cwd(), ".sessions");
 
 function userDir(uid: string): string {
   return path.join(SESSIONS_DIR, "user", uid);
