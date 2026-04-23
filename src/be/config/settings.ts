@@ -12,7 +12,7 @@ export interface AppSettings {
   mindCardsDisplayCount: number;
   /** 心智卡片更新间隔（小时） */
   mindCardsUpdateHours: number;
-  /** 智能体执行模式：direct = 直接输出，plan-and-solve = 规划后逐步执行，react = 推理与行动交替 */
+  /** 智能体执行模式：direct = 文本处理，plan-and-solve = 规划后逐步执行，react = 推理与行动交替 */
   agentMode: AgentMode;
 }
 
