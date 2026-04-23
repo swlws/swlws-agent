@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import {
   type AppSettings,
-  type AgentMode,
   getSettings,
   saveSettings,
 } from "@/fe/apis/settings";
@@ -22,13 +21,6 @@ const DEFAULT_FORM: AppSettings = {
   mindCardsDisplayCount: 4,
   mindCardsUpdateHours: 4,
   agentMode: "direct",
-};
-
-const AGENT_MODE_OPTIONS: AgentMode[] = ["direct", "plan-and-solve", "react"];
-const AGENT_MODE_LABELS: Record<AgentMode, string> = {
-  direct: "直接输出",
-  "plan-and-solve": "规划后执行",
-  react: "ReAct",
 };
 
 const HOUR_OPTIONS = [1, 2, 4, 8, 12, 24];
@@ -87,24 +79,6 @@ export function SettingsPanel({ isOpen, onClose, onSave }: SettingsPanelProps) {
   return (
     <Dialog isOpen={isOpen} onClose={onClose} title="设置" footer={footer}>
       <div className="divide-y divide-gray-100 px-5 dark:divide-[#3f3f46]">
-          <FormRow
-            label="智能体模式"
-            hint={
-              form.agentMode === "direct"
-                ? "直接生成回答，响应更快"
-                : form.agentMode === "react"
-                  ? "推理与工具调用交替进行，适合需要多步推断的任务"
-                  : "先规划执行步骤，再逐步完成，适合复杂任务"
-            }
-          >
-            <Select
-              value={form.agentMode}
-              options={AGENT_MODE_OPTIONS}
-              onChange={(v) => set("agentMode", v)}
-              format={(v) => AGENT_MODE_LABELS[v] ?? v}
-            />
-          </FormRow>
-
           <FormRow
             label="消息存储上限"
             hint={`会话最多保留 ${form.maxMessagesCount} 条消息，超出后从头部截断`}
