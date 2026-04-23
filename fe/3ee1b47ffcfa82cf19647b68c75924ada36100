@@ -1,0 +1,30 @@
+src/be/config/settings.ts
+  ffefead8a29cc2c6 15
+src/fe/pages/Chat/InputBar.tsx
+  ffefead8a29cc2c6 85
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.3.2",
+  "base_commit_sha": "fe3ee1b47ffcfa82cf19647b68c75924ada36100",
+  "prompts": {
+    "ffefead8a29cc2c6": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e9ee80d0-9a93-4a7f-9497-a0f2b05673b3",
+        "model": "mcs-5"
+      },
+      "human_author": "swlws",
+      "messages": [],
+      "total_additions": 2,
+      "total_deletions": 2,
+      "accepted_lines": 2,
+      "overriden_lines": 0
+    }
+  },
+  "humans": {
+    "h_9054b55ea37caa": {
+      "author": "swlws"
+    }
+  }
+}
