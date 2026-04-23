@@ -1,0 +1,30 @@
+src/app/layout.tsx
+  c7564aad040757d8 26,29
+src/fe/pages/Chat/InputBar.tsx
+  h_9054b55ea37caa 87
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.3.2",
+  "base_commit_sha": "6dc548800afca97138813ecb6850858d7f5d5d1f",
+  "prompts": {
+    "c7564aad040757d8": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5900ef86-4691-48c8-992d-b6a5bb6c89a0",
+        "model": "mcs-5"
+      },
+      "human_author": "swlws",
+      "messages": [],
+      "total_additions": 2,
+      "total_deletions": 1,
+      "accepted_lines": 2,
+      "overriden_lines": 0
+    }
+  },
+  "humans": {
+    "h_9054b55ea37caa": {
+      "author": "swlws"
+    }
+  }
+}
