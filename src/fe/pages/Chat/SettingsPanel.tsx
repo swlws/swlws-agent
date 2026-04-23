@@ -20,7 +20,7 @@ const DEFAULT_FORM: AppSettings = {
   summaryTriggerCount: 8,
   mindCardsDisplayCount: 4,
   mindCardsUpdateHours: 4,
-  agentMode: "direct",
+  agentMode: "text",
 };
 
 const HOUR_OPTIONS = [1, 2, 4, 8, 12, 24];

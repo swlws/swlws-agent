@@ -82,7 +82,7 @@ export const InputBar = memo(function InputBar({
                 disabled={loading}
                 className="rounded-full border border-gray-300 bg-white py-1.5 pl-3 pr-2 text-sm text-gray-700 outline-none transition-colors hover:border-gray-400 disabled:opacity-50 dark:border-[#4a4a4a] dark:bg-[#2f2f2f] dark:text-gray-300 dark:hover:border-[#666]"
               >
-                <option value="direct">文本处理</option>
+                <option value="text">文本处理</option>
                 <option value="image-gen">生成图片</option>
                 <option value="plan-and-solve">规划后执行</option>
                 <option value="react">ReAct</option>

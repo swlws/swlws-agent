@@ -1,7 +1,7 @@
 import fs from "fs/promises";
 import path from "path";
 
-export type AgentMode = "direct" | "plan-and-solve" | "react" | "image-gen";
+export type AgentMode = "text" | "plan-and-solve" | "react" | "image-gen";
 
 export interface AppSettings {
   /** 会话消息存储上限（条），超出时从头部截断，不触发 LLM */
@@ -12,7 +12,7 @@ export interface AppSettings {
   mindCardsDisplayCount: number;
   /** 心智卡片更新间隔（小时） */
   mindCardsUpdateHours: number;
-  /** 智能体执行模式：direct = 文本处理，plan-and-solve = 规划后逐步执行，react = 推理与行动交替 */
+  /** 智能体执行模式：text = 文本处理，plan-and-solve = 规划后逐步执行，react = 推理与行动交替 */
   agentMode: AgentMode;
 }
 
@@ -36,7 +36,7 @@ export async function loadDefaultSettings(): Promise<AppSettings> {
       summaryTriggerCount: 8,
       mindCardsDisplayCount: 4,
       mindCardsUpdateHours: 4,
-      agentMode: "direct",
+      agentMode: "text",
     };
     return { ..._defaultCache };
   }

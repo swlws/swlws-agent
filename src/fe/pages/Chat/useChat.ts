@@ -13,12 +13,12 @@ import type { AgentMode } from "@/fe/apis/settings";
 export type { ConversationMeta, AgentMode };
 
 const AGENT_MODE_KEY = "agent_mode";
-const VALID_MODES = new Set<AgentMode>(["direct", "plan-and-solve", "react"]);
+const VALID_MODES = new Set<AgentMode>(["text", "plan-and-solve", "react", "image-gen"]);
 
 function loadAgentMode(): AgentMode {
-  if (typeof window === "undefined") return "direct";
+  if (typeof window === "undefined") return "text";
   const stored = localStorage.getItem(AGENT_MODE_KEY) as AgentMode | null;
-  return stored && VALID_MODES.has(stored) ? stored : "direct";
+  return stored && VALID_MODES.has(stored) ? stored : "text";
 }
 
 function saveAgentMode(mode: AgentMode) {
@@ -30,7 +30,7 @@ export function useChat() {
   const [loading, setLoading] = useState(false);
   const [conversationId, setConversationIdState] = useState<string>("");
   const [conversations, setConversations] = useState<ConversationMeta[]>([]);
-  const [agentMode, setAgentModeState] = useState<AgentMode>("direct");
+  const [agentMode, setAgentModeState] = useState<AgentMode>("text");
   const sseRef = useRef<{ close: () => void } | null>(null);
 
   useEffect(() => {

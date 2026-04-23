@@ -3,7 +3,7 @@ import { createChatSseResponse } from "@/be/services/chatSseService";
 import type { AgentMode } from "@/be/config/settings";
 
 const VALID_MODES = new Set<AgentMode>([
-  "direct",
+  "text",
   "plan-and-solve",
   "react",
   "image-gen",

@@ -52,9 +52,7 @@ export class QueryEngine {
       const contextMessages = buildContextMessages(conv, content);
 
       const mode = params.agentMode ?? settings.agentMode;
-      console.log("==== ", params.agentMode, settings.agentMode);
-      const runner = modeRunners.get(mode) ?? modeRunners.get("direct")!;
-      console.log(runner);
+      const runner = modeRunners.get(mode) ?? modeRunners.get("text")!;
 
       const fullAssistantReply = await runner.execute(
         content,
