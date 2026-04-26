@@ -11,6 +11,29 @@ const MEMORY_LABELS: Record<string, string> = {
 };
 
 /**
+ * 将扁平化的 ChatMessage[] 转换为 OpenAI 标准的 LlmMessage[]
+ * 聚合连续的相同 role 的消息
+ */
+export function toStandardMessages(stored: ChatMessage[]): LlmMessage[] {
+  const result: LlmMessage[] = [];
+  for (const msg of stored) {
+    if (msg.cardType === 3) continue; // 忽略 Error 卡片
+
+    const last = result[result.length - 1];
+    if (last && last.role === msg.role) {
+      // 聚合相同 role 的内容
+      last.content = (last.content as string) + "\n" + msg.content;
+    } else {
+      result.push({
+        role: msg.role,
+        content: msg.content,
+      } as LlmMessage);
+    }
+  }
+  return result;
+}
+
+/**
  * Build the LLM input: structured memory index as system prompt + recent messages + current input.
  */
 export function buildContextMessages(
@@ -29,22 +52,23 @@ export function buildContextMessages(
     );
   }
 
+  const standardMessages = toStandardMessages(conv.messages);
+
   return [
     { role: "system", content: parts.join("\n\n") },
-    // 只取最近 4 次对话（8 条消息）传给 LLM，更早的历史已提炼进 memories
-    ...conv.messages.slice(-8),
+    // 只取最近 4 次对话（约 8 条聚合后的消息）传给 LLM
+    ...standardMessages.slice(-8),
     { role: "user", content: currentContent },
   ];
 }
 
 /**
- * Append the new exchange. Always runs, synchronous.
- * Also sets title from the first user message.
+ * Append the new exchange.
  */
 export function appendMessages(
   conv: ConversationData,
   userContent: string,
-  assistantContent: string,
+  assistantMessages: ChatMessage[],
 ): ConversationData {
   const title = conv.title ?? userContent.slice(0, 30);
   return {
@@ -53,8 +77,8 @@ export function appendMessages(
     updatedAt: new Date().toISOString(),
     messages: [
       ...conv.messages,
-      { role: "user", content: userContent },
-      { role: "assistant", content: assistantContent },
+      { role: "user", content: userContent, cardType: 1 },
+      ...assistantMessages,
     ],
   };
 }

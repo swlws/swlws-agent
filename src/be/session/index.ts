@@ -1,19 +1,14 @@
 import fs from "fs/promises";
 import path from "path";
-import { Message as ChatMessage } from "@/be/lib/text-llm";
 import { SESSIONS_DIR } from "@/be/config/paths";
-
-export type { ChatMessage };
-
-// ─── Write Lock ──────────────────────────────────────────────────────────────
-
-/** 每个文件路径对应一条串行写入队列，防止并发写覆盖 */
 const writeLocks = new Map<string, Promise<void>>();
 
 async function lockedWrite(filePath: string, data: string): Promise<void> {
   const prev = writeLocks.get(filePath) ?? Promise.resolve();
   let resolveCurrent!: () => void;
-  const current = new Promise<void>((r) => { resolveCurrent = r; });
+  const current = new Promise<void>((r) => {
+    resolveCurrent = r;
+  });
   writeLocks.set(filePath, current);
   try {
     await prev;
@@ -31,6 +26,17 @@ export interface Memory {
   type: MemoryType;
   description: string;
   content: string;
+}
+
+/** 扁平化存储的消息结构 */
+export interface ChatMessage {
+  role: "user" | "assistant" | "system";
+  content: string;
+  /**
+   * 对应 SSE 的 CardType
+   * 1: Markdown, 2: Cot, 3: Error, 4: Image
+   */
+  cardType: number;
 }
 
 export interface MindCard {
@@ -64,7 +70,6 @@ export interface MindCardsData {
   updatedAt: string;
 }
 
-
 function userDir(uid: string): string {
   return path.join(SESSIONS_DIR, "user", uid);
 }
@@ -83,7 +88,10 @@ async function ensureConversationDir(uid: string): Promise<void> {
 
 // ─── Conversation ───────────────────────────────────────────────────────────
 
-export async function loadConversation(uid: string, conversationId: string): Promise<ConversationData> {
+export async function loadConversation(
+  uid: string,
+  conversationId: string,
+): Promise<ConversationData> {
   const file = path.join(conversationDir(uid), `${conversationId}.json`);
   try {
     const raw = await fs.readFile(file, "utf-8");
@@ -93,17 +101,29 @@ export async function loadConversation(uid: string, conversationId: string): Pro
     return data;
   } catch {
     const now = new Date().toISOString();
-    return { memories: [], messages: [], summarizedUpTo: 0, createdAt: now, updatedAt: now };
+    return {
+      memories: [],
+      messages: [],
+      summarizedUpTo: 0,
+      createdAt: now,
+      updatedAt: now,
+    };
   }
 }
 
-export async function saveConversation(uid: string, conversationId: string, data: ConversationData): Promise<void> {
+export async function saveConversation(
+  uid: string,
+  conversationId: string,
+  data: ConversationData,
+): Promise<void> {
   await ensureConversationDir(uid);
   const file = path.join(conversationDir(uid), `${conversationId}.json`);
   await lockedWrite(file, JSON.stringify(data, null, 2));
 }
 
-export async function listConversations(uid: string): Promise<ConversationMeta[]> {
+export async function listConversations(
+  uid: string,
+): Promise<ConversationMeta[]> {
   const dir = conversationDir(uid);
   try {
     const entries = await fs.readdir(dir);
@@ -130,7 +150,10 @@ export async function listConversations(uid: string): Promise<ConversationMeta[]
   }
 }
 
-export async function deleteConversation(uid: string, conversationId: string): Promise<void> {
+export async function deleteConversation(
+  uid: string,
+  conversationId: string,
+): Promise<void> {
   const file = path.join(conversationDir(uid), `${conversationId}.json`);
   await fs.rm(file, { force: true });
 }
@@ -147,7 +170,10 @@ export async function loadMindCardsData(uid: string): Promise<MindCardsData> {
   }
 }
 
-export async function saveMindCardsData(uid: string, data: MindCardsData): Promise<void> {
+export async function saveMindCardsData(
+  uid: string,
+  data: MindCardsData,
+): Promise<void> {
   await ensureUserDir(uid);
   const file = path.join(userDir(uid), "mindcards.json");
   await lockedWrite(file, JSON.stringify(data, null, 2));
@@ -155,7 +181,9 @@ export async function saveMindCardsData(uid: string, data: MindCardsData): Promi
 
 // ─── User Settings ───────────────────────────────────────────────────────────
 
-export async function loadUserSettings(uid: string): Promise<Partial<import("@/be/config/settings").AppSettings>> {
+export async function loadUserSettings(
+  uid: string,
+): Promise<Partial<import("@/be/config/settings").AppSettings>> {
   const file = path.join(userDir(uid), "setting.json");
   try {
     const raw = await fs.readFile(file, "utf-8");
@@ -165,7 +193,10 @@ export async function loadUserSettings(uid: string): Promise<Partial<import("@/b
   }
 }
 
-export async function saveUserSettings(uid: string, settings: Partial<import("@/be/config/settings").AppSettings>): Promise<void> {
+export async function saveUserSettings(
+  uid: string,
+  settings: Partial<import("@/be/config/settings").AppSettings>,
+): Promise<void> {
   await ensureUserDir(uid);
   const file = path.join(userDir(uid), "setting.json");
   await lockedWrite(file, JSON.stringify(settings, null, 2));

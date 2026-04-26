@@ -1,5 +1,6 @@
 import { chat } from "@/be/lib/text-llm";
 import type { ConversationData, Memory, ChatMessage } from "@/be/session";
+import { toStandardMessages } from "./messages";
 
 const EXTRACT_PROMPT = `你是一个对话记忆提取助手。请从新增对话中提取关键信息，与现有记忆合并更新后输出完整记忆列表。
 
@@ -22,7 +23,11 @@ async function extractMemories(
   existing: Memory[],
   newMessages: ChatMessage[],
 ): Promise<Memory[]> {
-  const transcript = newMessages
+  // 提取记忆前先进行聚合与过滤（剔除 Cot 和 Error，保留 Markdown 内容）
+  const filtered = newMessages.filter((m) => m.cardType === 1);
+  const standard = toStandardMessages(filtered);
+
+  const transcript = standard
     .map((m) => `${m.role === "user" ? "用户" : "助手"}：${m.content}`)
     .join("\n");
 
@@ -46,36 +51,43 @@ async function extractMemories(
 }
 
 /**
- * 截断消息列表至 maxCount 条，纯内存操作，不调用 LLM。
- * 截断时同步修正 summarizedUpTo 游标。
+ * 截断消息列表，确保不截断单次对话的卡片流。
+ * 基于用户消息（轮次）进行计数。
  */
 export function trimMessages(
   conv: ConversationData,
-  maxCount = 100,
+  maxUserMessages = 50,
 ): ConversationData {
-  if (conv.messages.length <= maxCount) return conv;
-  const dropped = conv.messages.length - maxCount;
+  const userIndices = conv.messages
+    .map((m, i) => (m.role === "user" ? i : -1))
+    .filter((i) => i !== -1);
+
+  if (userIndices.length <= maxUserMessages) return conv;
+
+  const keepFromIndex = userIndices[userIndices.length - maxUserMessages];
   return {
     ...conv,
-    messages: conv.messages.slice(dropped),
-    summarizedUpTo: Math.max(0, conv.summarizedUpTo - dropped),
+    messages: conv.messages.slice(keepFromIndex),
+    summarizedUpTo: Math.max(0, conv.summarizedUpTo - keepFromIndex),
   };
 }
 
 /**
- * 按游标判断是否需要重新生成历史摘要。
- * 每新增 triggerCount 条消息（默认 8，即 4 次对话）触发一次 LLM 提炼。
- * 未达到阈值时直接返回，不消耗 LLM。
+ * 按轮次判断是否需要重新生成历史摘要。
+ * 每新增 triggerUserCount 轮对话触发一次。
  */
 export async function maybeUpdateSummary(
   conv: ConversationData,
-  triggerCount = 8,
+  triggerUserCount = 4,
 ): Promise<ConversationData> {
-  const newCount = conv.messages.length - conv.summarizedUpTo;
-  if (newCount < triggerCount) return conv;
+  const messagesSinceSummary = conv.messages.slice(conv.summarizedUpTo);
+  const newUserCount = messagesSinceSummary.filter(
+    (m) => m.role === "user",
+  ).length;
 
-  const newMessages = conv.messages.slice(conv.summarizedUpTo);
-  const memories = await extractMemories(conv.memories, newMessages);
+  if (newUserCount < triggerUserCount) return conv;
+
+  const memories = await extractMemories(conv.memories, messagesSinceSummary);
 
   return {
     ...conv,
