@@ -5,6 +5,7 @@ export const enum CardType {
   Cot = 2,
   Error = 3,
   Image = 4,
+  Divider = 5,
 }
 
 export interface MessageCard {
@@ -60,7 +61,11 @@ export function connectChatSse({
     }
 
     try {
-      const parsed = JSON.parse(payload) as { type?: string; cardType?: CardType; content?: string };
+      const parsed = JSON.parse(payload) as {
+        type?: string;
+        cardType?: CardType;
+        content?: string;
+      };
 
       if (parsed.type === "token" && typeof parsed.content === "string") {
         onToken(parsed.cardType ?? CardType.Markdown, parsed.content);

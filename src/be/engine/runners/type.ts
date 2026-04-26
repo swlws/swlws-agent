@@ -1,6 +1,7 @@
 import type { Message } from "@/be/lib/text-llm";
 
 export const enum CardType {
+  Divider = 5,
   Markdown = 1,
   Cot = 2,
   Error = 3,

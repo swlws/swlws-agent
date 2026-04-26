@@ -33,6 +33,10 @@ export async function solveStep(
 
   onToken(CardType.Markdown, "\n\n");
   const fullOutput = stepHeader + stepOutput + "\n\n";
+  // 在每个步骤之间插入分割线卡片（除最后一步外）
+  if (step.index < allSteps.length - 1) {
+    onToken(CardType.Divider, "\n---\n");
+  }
 
   return fullOutput;
 }

@@ -70,6 +70,15 @@ export async function runReActLoop(
       if (!delta) continue;
 
       if (delta.content) {
+        // 过滤误输出的 TOOLCALL 行，防止被当作普通文本展示
+        if (
+          typeof delta.content === "string" &&
+          delta.content.trim().startsWith("TOOLCALL>")
+        ) {
+          console.log("跳过 TOOLCALL 行", delta.content);
+          // 跳过此内容，不触发 token 回调
+          continue;
+        }
         stepText += delta.content;
         fullReply += delta.content;
         onToken(CardType.Markdown, delta.content);

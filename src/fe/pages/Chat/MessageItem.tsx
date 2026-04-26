@@ -3,6 +3,7 @@ import MarkdownView from "@/fe/cards/mardown-card";
 import { CotCard } from "@/fe/cards/cot-card";
 import { ErrorCard } from "@/fe/cards/error-card";
 import { ImageCard } from "@/fe/cards/image-card";
+import { DividerCard } from "@/fe/cards/divider-card";
 import { LoadingDots } from "@/fe/components/LoadingDots";
 import { ChatMessage, CardType } from "@/fe/lib/chatSseClient";
 import { CopySuccessIcon, CopyClipboardIcon } from "@/fe/components/icons";
@@ -80,6 +81,9 @@ export const MessageItem = memo(function MessageItem({
                 }
                 if (card.cardType === CardType.Image) {
                   return <ImageCard key={idx} url={card.content} />;
+                }
+                if (card.cardType === CardType.Divider) {
+                  return <DividerCard key={idx} />;
                 }
                 return <MarkdownView key={idx} content={card.content} />;
               })
