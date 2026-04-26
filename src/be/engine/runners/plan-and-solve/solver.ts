@@ -1,25 +1,11 @@
 import OpenAI from "openai";
 import { Message } from "@/be/lib/text-llm";
-import { getToolDefinitions, executeTool } from "@/be/engine/tools";
 import type { PlanStep } from "./planner";
 import { CardType } from "@/be/engine/runners/type";
-
-const MAX_TOOL_ITERATIONS = 3;
-
-function createClient(): OpenAI {
-  const apiKey = process.env.SWLWS_TEXT_LLM_API_KEY;
-  if (!apiKey) throw new Error("SWLWS_TEXT_LLM_API_KEY is not set");
-  return new OpenAI({ apiKey, baseURL: process.env.SWLWS_TEXT_LLM_BASE_URL });
-}
-
-function resolveModel(): string {
-  const model = process.env.SWLWS_TEXT_LLM_MODEL;
-  if (!model) throw new Error("SWLWS_TEXT_LLM_MODEL is not set");
-  return model;
-}
+import { runReActLoop } from "../common/react-core";
 
 /**
- * 执行单个计划步骤，支持工具调用循环，流式推送 token
+ * 执行单个计划步骤，通过复用 ReAct 核心循环实现动态应变能力
  * 返回本步骤完整输出文本
  */
 export async function solveStep(
@@ -42,118 +28,11 @@ export async function solveStep(
     previousResults,
   );
 
-  const client = createClient();
-  const model = resolveModel();
-  const toolDefinitions = getToolDefinitions();
-
-  let fullOutput = stepHeader;
-  let iterations = 0;
-  let currentMessages = [...messages];
-
-  while (iterations < MAX_TOOL_ITERATIONS) {
-    iterations++;
-
-    const response = await client.chat.completions.create(
-      {
-        model,
-        messages: currentMessages,
-        tools: toolDefinitions,
-        tool_choice: "auto",
-        stream: true,
-        temperature: 0.7,
-      },
-      { signal },
-    );
-
-    let stepText = "";
-    const toolCalls: Array<{
-      id: string;
-      type: "function";
-      function: { name: string; arguments: string };
-    }> = [];
-    const toolCallChunks: Record<
-      number,
-      { id: string; name: string; arguments: string }
-    > = {};
-
-    for await (const chunk of response) {
-      const delta = chunk.choices[0]?.delta;
-      if (!delta) continue;
-
-      if (delta.content) {
-        stepText += delta.content;
-        fullOutput += delta.content;
-        onToken(CardType.Markdown, delta.content);
-      }
-
-      if (delta.tool_calls) {
-        for (const tc of delta.tool_calls) {
-          const idx = tc.index ?? 0;
-          if (!toolCallChunks[idx]) {
-            toolCallChunks[idx] = { id: tc.id ?? "", name: "", arguments: "" };
-          }
-          if (tc.function?.name) toolCallChunks[idx].name += tc.function.name;
-          if (tc.function?.arguments)
-            toolCallChunks[idx].arguments += tc.function.arguments;
-          if (tc.id) toolCallChunks[idx].id = tc.id;
-        }
-      }
-    }
-
-    for (const chunk of Object.values(toolCallChunks)) {
-      toolCalls.push({
-        id: chunk.id,
-        type: "function",
-        function: { name: chunk.name, arguments: chunk.arguments },
-      });
-    }
-
-    if (toolCalls.length === 0) break;
-
-    const assistantMessage: OpenAI.Chat.ChatCompletionMessageParam = {
-      role: "assistant",
-      content: stepText || null,
-      tool_calls: toolCalls,
-    };
-    currentMessages = [...currentMessages, assistantMessage];
-
-    // 并行执行所有工具调用
-    const toolResults = await Promise.all(
-      toolCalls.map(async (tc) => {
-        const args = (() => {
-          try {
-            return JSON.parse(tc.function.arguments) as Record<string, unknown>;
-          } catch {
-            return {};
-          }
-        })();
-
-        const result = await executeTool(tc.function.name, args, signal);
-
-        return { tc, result };
-      }),
-    );
-
-    // 按顺序推流 Observation 并追加消息历史
-    for (const { tc, result } of toolResults) {
-      if (result.isImage) {
-        onToken(CardType.Image, result.content);
-      } else {
-        const resultBlock = `\n\n> **工具：${tc.function.name}**\n> ${result.content.split("\n").join("\n> ")}\n\n`;
-        fullOutput += resultBlock;
-        onToken(CardType.Markdown, resultBlock);
-      }
-
-      currentMessages.push({
-        role: "tool",
-        tool_call_id: tc.id,
-        content: result.content,
-      });
-    }
-  }
+  // 复用通用的 ReAct 核心逻辑执行当前步骤
+  const stepOutput = await runReActLoop(messages, onToken, { signal });
 
   onToken(CardType.Markdown, "\n\n");
-  fullOutput += "\n\n";
+  const fullOutput = stepHeader + stepOutput + "\n\n";
 
   return fullOutput;
 }
