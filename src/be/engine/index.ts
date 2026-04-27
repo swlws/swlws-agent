@@ -19,8 +19,9 @@ import {
   mergeSettings,
   type AgentMode,
 } from "@/be/config/settings";
-import { modeRunners } from "./runners";
 import { type CardType } from "./runners/type";
+import { IntentParser } from "./intent";
+import { resolveRunner } from "./intent/resolver";
 
 export type { CardType };
 
@@ -67,8 +68,19 @@ export class QueryEngine {
         onToken(cardType, token);
       };
 
-      const mode = params.agentMode ?? settings.agentMode;
-      const runner = modeRunners.get(mode) ?? modeRunners.get("text")!;
+      const fallbackMode = params.agentMode ?? settings.agentMode;
+
+      // 意图解析：根据配置策略解析用户意图，再路由到最合适的 Runner
+      const intentParser = new IntentParser(
+        settings.intentDetection,
+        settings.intentConfidenceThreshold,
+      );
+      const intentResult = await intentParser.parse(content);
+      const runner = resolveRunner(
+        intentResult,
+        fallbackMode,
+        settings.intentConfidenceThreshold,
+      );
 
       await runner.execute(
         content,

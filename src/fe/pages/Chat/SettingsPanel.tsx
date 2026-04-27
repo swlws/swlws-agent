@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import {
   type AppSettings,
+  type IntentDetectionMode,
   getSettings,
   saveSettings,
 } from "@/fe/apis/settings";
@@ -21,12 +22,23 @@ const DEFAULT_FORM: AppSettings = {
   mindCardsDisplayCount: 4,
   mindCardsUpdateHours: 4,
   agentMode: "text",
+  intentDetection: "rule",
+  intentConfidenceThreshold: 0.4,
 };
 
 const HOUR_OPTIONS = [1, 2, 4, 8, 12, 24];
 const CARD_COUNT_OPTIONS = [2, 4, 6, 8, 10, 12, 14, 16];
 const MSG_COUNT_OPTIONS = [20, 50, 100, 200, 500];
 const SUMMARY_TRIGGER_OPTIONS = [4, 6, 8, 10, 12];
+
+const INTENT_DETECTION_OPTIONS: IntentDetectionMode[] = ["rule", "llm", "disabled"];
+const INTENT_DETECTION_LABELS: Record<IntentDetectionMode, string> = {
+  rule: "规则匹配",
+  llm: "LLM 分类",
+  disabled: "关闭",
+};
+
+const CONFIDENCE_THRESHOLD_OPTIONS = [0.3, 0.4, 0.5, 0.6, 0.7, 0.8];
 
 export function SettingsPanel({ isOpen, onClose, onSave }: SettingsPanelProps) {
   const [form, setForm] = useState<AppSettings>(DEFAULT_FORM);
@@ -121,6 +133,30 @@ export function SettingsPanel({ isOpen, onClose, onSave }: SettingsPanelProps) {
               options={HOUR_OPTIONS}
               onChange={(v) => set("mindCardsUpdateHours", v)}
               format={(v) => `${v} 小时`}
+            />
+          </FormRow>
+
+          <FormRow
+            label="意图检测策略"
+            hint="rule = 关键词规则（零延迟）；llm = LLM 分类（更精准）；disabled = 关闭自动路由"
+          >
+            <Select
+              value={form.intentDetection}
+              options={INTENT_DETECTION_OPTIONS}
+              onChange={(v) => set("intentDetection", v)}
+              format={(v) => INTENT_DETECTION_LABELS[v]}
+            />
+          </FormRow>
+
+          <FormRow
+            label="意图置信度阈值"
+            hint="低于此值时忽略意图解析结果，回退到手动选择的智能体模式"
+          >
+            <Select
+              value={form.intentConfidenceThreshold}
+              options={CONFIDENCE_THRESHOLD_OPTIONS}
+              onChange={(v) => set("intentConfidenceThreshold", v)}
+              format={(v) => `${v}`}
             />
           </FormRow>
         </div>

@@ -1,7 +1,7 @@
 import { httpRequest } from "@/fe/lib/http";
-import type { AppSettings, AgentMode } from "@/be/config/settings";
+import type { AppSettings, AgentMode, IntentDetectionMode } from "@/be/config/settings";
 
-export type { AppSettings, AgentMode };
+export type { AppSettings, AgentMode, IntentDetectionMode };
 
 export function getSettings(): Promise<AppSettings> {
   return httpRequest("/api/settings");
