@@ -9,3 +9,4 @@ export { CopySuccess as CopySuccessIcon } from "@/fe/assets/icons/CopySuccess";
 export { CopyClipboard as CopyClipboardIcon } from "@/fe/assets/icons/CopyClipboard";
 export { Trash as TrashIcon } from "@/fe/assets/icons/Trash";
 export { Mcp as McpIcon } from "@/fe/assets/icons/Mcp";
+export { Skills as SkillsIcon } from "@/fe/assets/icons/Skills";

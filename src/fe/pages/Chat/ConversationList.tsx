@@ -1,7 +1,7 @@
 import { useState } from "react";
 import type { ConversationMeta } from "./useChat";
 import { NavIconButton } from "@/fe/components/NavIconButton";
-import { NewChatIcon, SettingsIcon, TrashIcon, McpIcon } from "@/fe/components/icons";
+import { NewChatIcon, SettingsIcon, TrashIcon, McpIcon, SkillsIcon } from "@/fe/components/icons";
 
 interface ConversationListProps {
   open: boolean;
@@ -12,6 +12,7 @@ interface ConversationListProps {
   onDeleteConversation: (id: string) => void;
   onOpenSettings: () => void;
   onOpenMcp: () => void;
+  onOpenSkills: () => void;
 }
 
 function formatDate(iso: string): string {
@@ -40,6 +41,7 @@ export function ConversationList({
   onDeleteConversation,
   onOpenSettings,
   onOpenMcp,
+  onOpenSkills,
 }: ConversationListProps) {
   const [hoveredId, setHoveredId] = useState<string | null>(null);
 
@@ -63,6 +65,13 @@ export function ConversationList({
           title="MCP"
           icon={<McpIcon />}
           label="MCP"
+          showLabel={open}
+        />
+        <NavIconButton
+          onClick={onOpenSkills}
+          title="Skills"
+          icon={<SkillsIcon />}
+          label="Skills"
           showLabel={open}
         />
       </div>

@@ -23,6 +23,7 @@ import { type CardType } from "./runners/type";
 import { IntentParser } from "./intent";
 import { resolveRunner } from "./intent/resolver";
 import { applyDeepThinkPolicyPrompt } from "./prompts/deep-think-policy";
+import { skillManager, executeSkill } from "@/be/engine/skills";
 
 export type { CardType };
 
@@ -76,24 +77,37 @@ export class QueryEngine {
       };
 
       const fallbackMode = params.agentMode ?? settings.agentMode;
-      // 意图解析：根据配置策略解析用户意图，再路由到最合适的 Runner
-      const intentParser = new IntentParser(
-        settings.intentDetection,
-        settings.intentConfidenceThreshold,
-      );
-      const intentResult = await intentParser.parse(content);
-      const runner = resolveRunner(
-        intentResult,
-        fallbackMode,
-        settings.intentConfidenceThreshold,
-      );
 
-      await runner.execute(
-        content,
-        runtimeMessages,
-        { onToken: wrappedOnToken, onDone, onError },
-        signal,
-      );
+      // Skill 匹配：/command 优先于意图解析
+      const skillMatch = skillManager.match(content);
+      if (skillMatch) {
+        await executeSkill(
+          skillMatch.skill,
+          skillMatch.extractedArgs,
+          runtimeMessages,
+          { onToken: wrappedOnToken },
+          signal,
+        );
+      } else {
+        // 意图解析：根据配置策略解析用户意图，再路由到最合适的 Runner
+        const intentParser = new IntentParser(
+          settings.intentDetection,
+          settings.intentConfidenceThreshold,
+        );
+        const intentResult = await intentParser.parse(content);
+        const runner = resolveRunner(
+          intentResult,
+          fallbackMode,
+          settings.intentConfidenceThreshold,
+        );
+
+        await runner.execute(
+          content,
+          runtimeMessages,
+          { onToken: wrappedOnToken, onDone, onError },
+          signal,
+        );
+      }
 
       onDone();
 

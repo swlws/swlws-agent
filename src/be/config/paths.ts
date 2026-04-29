@@ -8,3 +8,12 @@ export const SESSIONS_DIR = path.join(DATA_DIR, "sessions");
 
 /** MCP 配置文件路径 */
 export const MCP_CONFIG_PATH = path.join(DATA_DIR, "mcp.json");
+
+/** 用户 Skill 目录 */
+export const SKILLS_DIR = path.join(DATA_DIR, "skills");
+
+/** 内置 Skill 目录 */
+export const BUILTIN_SKILLS_DIR = path.join(
+  process.cwd(),
+  ".swlws-builtin/skills",
+);

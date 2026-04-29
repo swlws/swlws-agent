@@ -1,6 +1,7 @@
 import type OpenAI from "openai";
 import { imageGenerateTool } from "./imageGenerate";
 import { mcpManager, parseMcpToolName } from "./mcp";
+import { skillManager } from "@/be/engine/skills";
 
 export interface Tool {
   name: string;
@@ -19,7 +20,11 @@ export interface ToolResult {
 const staticTools: Tool[] = [imageGenerateTool];
 
 function getAllTools(): Tool[] {
-  return [...staticTools, ...mcpManager.getTools()];
+  return [
+    ...staticTools,
+    ...mcpManager.getTools(),
+    ...skillManager.getAsTools(),
+  ];
 }
 
 export function getToolRegistry(): Tool[] {

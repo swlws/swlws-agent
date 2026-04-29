@@ -7,6 +7,7 @@ import { InputBar } from "./InputBar";
 import { ConversationList } from "./ConversationList";
 import { SettingsPanel } from "./SettingsPanel";
 import { McpPanel } from "./McpPanel";
+import { SkillsPanel } from "./SkillsPanel";
 import { ChatHeader } from "./ChatHeader";
 
 export default function Chat() {
@@ -28,6 +29,7 @@ export default function Chat() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [mcpOpen, setMcpOpen] = useState(false);
+  const [skillsOpen, setSkillsOpen] = useState(false);
 
   useEffect(() => {
     loadConversationList();
@@ -50,6 +52,7 @@ export default function Chat() {
         onDeleteConversation={deleteConversation}
         onOpenSettings={() => setSettingsOpen(true)}
         onOpenMcp={() => setMcpOpen(true)}
+        onOpenSkills={() => setSkillsOpen(true)}
       />
 
       {/* 右侧主内容区 */}
@@ -82,6 +85,10 @@ export default function Chat() {
       <McpPanel
         isOpen={mcpOpen}
         onClose={() => setMcpOpen(false)}
+      />
+      <SkillsPanel
+        isOpen={skillsOpen}
+        onClose={() => setSkillsOpen(false)}
       />
     </div>
   );

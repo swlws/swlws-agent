@@ -9,6 +9,9 @@ export async function register() {
 
   await mcpManager.initialize();
 
+  const { skillManager } = await import("@/be/engine/skills");
+  await skillManager.initialize();
+
   // 进程退出时断开所有 MCP 连接（通过 globalThis 括号访问，绕过 Edge 打包器静态分析）
   const dispose = () => void mcpManager.dispose();
   const proc = (globalThis as Record<string, unknown>)["process"] as
