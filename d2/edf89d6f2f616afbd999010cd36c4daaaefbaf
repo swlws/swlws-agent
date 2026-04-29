@@ -1,0 +1,28 @@
+src/be/engine/tools/index.ts
+  562a4248dbd37e46 22
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.3.4",
+  "base_commit_sha": "d2edf89d6f2f616afbd999010cd36c4daaaefbaf",
+  "prompts": {
+    "562a4248dbd37e46": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9be0818c-f552-4d95-9902-5520bf08db54",
+        "model": "mco-4"
+      },
+      "human_author": "swlws",
+      "messages": [],
+      "total_additions": 62,
+      "total_deletions": 48,
+      "accepted_lines": 17,
+      "overriden_lines": 3
+    }
+  },
+  "humans": {
+    "h_9054b55ea37caa": {
+      "author": "swlws"
+    }
+  }
+}
