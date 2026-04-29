@@ -1,0 +1,44 @@
+src/fe/pages/Chat/index.tsx
+  562a4248dbd37e46 9,30,52,82-85
+src/app/api/mcp/route.ts
+  562a4248dbd37e46 1-69
+src/fe/assets/icons/Mcp.tsx
+  562a4248dbd37e46 1-20
+src/be/engine/tools/mcp/config.ts
+  562a4248dbd37e46 62-65
+src/fe/pages/Chat/McpPanel.tsx
+  562a4248dbd37e46 1-363
+src/fe/pages/Chat/ConversationList.tsx
+  562a4248dbd37e46 4,14,42,61-67
+src/fe/apis/mcp.ts
+  562a4248dbd37e46 1-55
+src/be/engine/tools/mcp/index.ts
+  562a4248dbd37e46 2,6-13,16-17,26-27,29,31-64,72-134,156-157,162-171
+src/fe/components/icons/index.tsx
+  562a4248dbd37e46 11
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.3.4",
+  "base_commit_sha": "954b45e30a85fc2f83232563cce11010d9497be5",
+  "prompts": {
+    "562a4248dbd37e46": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9be0818c-f552-4d95-9902-5520bf08db54",
+        "model": "mco-4"
+      },
+      "human_author": "swlws",
+      "messages": [],
+      "total_additions": 660,
+      "total_deletions": 37,
+      "accepted_lines": 668,
+      "overriden_lines": 0
+    }
+  },
+  "humans": {
+    "h_9054b55ea37caa": {
+      "author": "swlws"
+    }
+  }
+}
