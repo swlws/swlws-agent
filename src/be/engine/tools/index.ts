@@ -18,19 +18,8 @@ export interface ToolResult {
 /** 静态工具（随进程启动固定注册） */
 const staticTools: Tool[] = [imageGenerateTool];
 
-/** 动态工具（MCP 等在运行时注册） */
-let dynamicTools: Tool[] = [];
-
-export function registerTools(tools: Tool[]): void {
-  dynamicTools.push(...tools);
-}
-
-export function clearDynamicTools(): void {
-  dynamicTools = [];
-}
-
 function getAllTools(): Tool[] {
-  return [...staticTools, ...dynamicTools];
+  return [...staticTools, ...mcpManager.getTools()];
 }
 
 export function getToolRegistry(): Tool[] {

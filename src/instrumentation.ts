@@ -5,17 +5,15 @@
 export async function register() {
   if (process.env.NEXT_RUNTIME !== "nodejs") return;
 
-  console.log("register mcp");
-
   const { mcpManager } = await import("@/be/engine/tools/mcp");
-  const { registerTools } = await import("@/be/engine/tools");
 
   await mcpManager.initialize();
-  registerTools(mcpManager.getTools());
 
   // 进程退出时断开所有 MCP 连接（通过 globalThis 括号访问，绕过 Edge 打包器静态分析）
   const dispose = () => void mcpManager.dispose();
-  const proc = (globalThis as Record<string, unknown>)["process"] as NodeJS.Process | undefined;
+  const proc = (globalThis as Record<string, unknown>)["process"] as
+    | NodeJS.Process
+    | undefined;
   proc?.once("SIGTERM", dispose);
   proc?.once("SIGINT", dispose);
 }

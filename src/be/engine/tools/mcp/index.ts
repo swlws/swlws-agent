@@ -28,7 +28,6 @@ class McpManager {
         const adapted = client.tools.map((info) =>
           adaptMcpTool(serverName, info, client),
         );
-        console.log(adapted);
         this._tools.push(...adapted);
         console.log(
           `[MCP] ${serverName} connected, ${adapted.length} tool(s) loaded`,
@@ -68,6 +67,12 @@ class McpManager {
   }
 }
 
-export const mcpManager = new McpManager();
+export const mcpManager: McpManager = (() => {
+  // 通过 globalThis 共享单例，避免 Next.js 中 instrumentation 与 route handler
+  // 处于不同模块实例时各自创建一份 McpManager 导致工具注册不可见
+  const g = globalThis as unknown as { __mcpManager?: McpManager };
+  if (!g.__mcpManager) g.__mcpManager = new McpManager();
+  return g.__mcpManager;
+})();
 
 export { parseMcpToolName };
