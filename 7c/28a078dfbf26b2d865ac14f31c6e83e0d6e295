@@ -1,0 +1,30 @@
+src/be/engine/tools/mcp/config.ts
+  562a4248dbd37e46 19-44,52-57
+src/be/engine/tools/mcp/index.ts
+  h_9054b55ea37caa 31
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.3.4",
+  "base_commit_sha": "7c28a078dfbf26b2d865ac14f31c6e83e0d6e295",
+  "prompts": {
+    "562a4248dbd37e46": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9be0818c-f552-4d95-9902-5520bf08db54",
+        "model": "mco-4"
+      },
+      "human_author": "swlws",
+      "messages": [],
+      "total_additions": 32,
+      "total_deletions": 1,
+      "accepted_lines": 48,
+      "overriden_lines": 0
+    }
+  },
+  "humans": {
+    "h_9054b55ea37caa": {
+      "author": "swlws"
+    }
+  }
+}
