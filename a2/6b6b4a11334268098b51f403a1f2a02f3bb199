@@ -1,0 +1,30 @@
+README.md
+  h_8b2f1d92a5ba33 1,3-49
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.1",
+  "base_commit_sha": "a26b6b4a11334268098b51f403a1f2a02f3bb199",
+  "prompts": {
+    "562a4248dbd37e46": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9be0818c-f552-4d95-9902-5520bf08db54",
+        "model": "mco-4"
+      },
+      "human_author": "swlws <swlwsgg@gmai.com>",
+      "total_additions": 49,
+      "total_deletions": 16,
+      "accepted_lines": 49,
+      "overriden_lines": 0
+    }
+  },
+  "humans": {
+    "h_8b2f1d92a5ba33": {
+      "author": "swlws <swlwsgg@gmai.com>"
+    },
+    "h_9054b55ea37caa": {
+      "author": "swlws"
+    }
+  }
+}
