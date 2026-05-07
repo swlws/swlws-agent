@@ -1,0 +1,33 @@
+src/be/engine/skills/index.ts
+  562a4248dbd37e46 3,7-8,14-27,31,34,49-54,98,101-102,106
+src/be/engine/skills/loader.ts
+  562a4248dbd37e46 6-17,33,45
+src/app/api/skills/route.ts
+  562a4248dbd37e46 13,15,17,21
+src/be/engine/skills/executor.ts
+  562a4248dbd37e46 26-27
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.1",
+  "base_commit_sha": "4aabbf560f5d63337122bae336d0e16046297c52",
+  "prompts": {
+    "562a4248dbd37e46": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9be0818c-f552-4d95-9902-5520bf08db54",
+        "model": "mco-4"
+      },
+      "human_author": "swlws <swlwsgg@gmai.com>",
+      "total_additions": 0,
+      "total_deletions": 0,
+      "accepted_lines": 49,
+      "overriden_lines": 0
+    }
+  },
+  "humans": {
+    "h_9054b55ea37caa": {
+      "author": "swlws"
+    }
+  }
+}
