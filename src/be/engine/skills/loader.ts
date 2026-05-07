@@ -3,6 +3,18 @@ import path from "path";
 import type { SkillDefinition, SkillMeta } from "./types";
 
 const FRONTMATTER_RE = /^---\s*\n([\s\S]*?)\n---\s*\n([\s\S]*)$/;
+const QUOTE_RE = /^(['"])(.*)\1$/;
+
+function stripQuotes(val: string): string {
+  const m = val.match(QUOTE_RE);
+  return m ? m[2] : val;
+}
+
+function parseNumber(val: string | undefined): number | undefined {
+  if (!val) return undefined;
+  const n = Number(val);
+  return Number.isFinite(n) ? n : undefined;
+}
 
 function parseFrontmatter(
   raw: string,
@@ -18,7 +30,7 @@ function parseFrontmatter(
     const idx = line.indexOf(":");
     if (idx === -1) continue;
     const key = line.slice(0, idx).trim();
-    const val = line.slice(idx + 1).trim();
+    const val = stripQuotes(line.slice(idx + 1).trim());
     if (key && val) fields[key] = val;
   }
 
@@ -30,7 +42,7 @@ function parseFrontmatter(
     argumentHint: fields["argument-hint"] || undefined,
     asTool: fields["as-tool"] === "true",
     execution: "prompt",
-    temperature: fields["temperature"] ? Number(fields["temperature"]) : undefined,
+    temperature: parseNumber(fields["temperature"]),
     enabled: fields["enabled"] !== "false",
   };
 

@@ -23,14 +23,8 @@ export async function executeSkill(
 
   const systemMessage: Message = { role: "system", content: systemContent };
 
-  // 注入到最后一条 user 消息之前
-  const messages = [...contextMessages];
-  const userIndex = messages.findLastIndex((m) => m.role === "user");
-  if (userIndex === -1) {
-    messages.push(systemMessage);
-  } else {
-    messages.splice(userIndex, 0, systemMessage);
-  }
+  // Skill system prompt 置于消息数组头部（index 0），确保符合 API 约定
+  const messages: Message[] = [systemMessage, ...contextMessages];
 
   let reply = "";
   for await (const chunk of chatStream(

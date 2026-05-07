@@ -10,15 +10,15 @@ export async function GET() {
 export async function PATCH(req: NextRequest) {
   const { name, action } = (await req.json()) as {
     name?: string;
-    action?: "enable" | "disable";
+    action?: string;
   };
-  if (!name || !action) {
+  if (!name || (action !== "enable" && action !== "disable")) {
     return NextResponse.json(
-      { error: "name and action are required" },
+      { error: "name and action (enable|disable) are required" },
       { status: 400 },
     );
   }
-  skillManager.setEnabled(name, action === "enable");
+  await skillManager.setEnabled(name, action === "enable");
   return NextResponse.json({ ok: true });
 }
 
