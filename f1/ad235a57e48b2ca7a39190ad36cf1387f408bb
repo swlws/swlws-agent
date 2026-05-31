@@ -1,0 +1,27 @@
+src/fe/pages/Chat/SlashMenu.tsx
+  s_16fbf3fcf55483::t_0403a141729cc4 9,23-24,29-31,33-39,41-47,49-68,70-72,74-78,80-86,88-106
+  s_16fbf3fcf55483::t_8fa64a5788fde7 13,16-18,22,25,40,79,110
+  s_16fbf3fcf55483::t_832571cf8f76da 19-21,48,87
+src/fe/pages/Chat/InputBar.tsx
+  s_16fbf3fcf55483::t_ce1b51b80cf779 1
+  ai_agent 37,40-41,135,142,161-164
+  s_16fbf3fcf55483::t_75be99d6020c50 36,42-61
+  s_16fbf3fcf55483::t_792cfc0a282c2e 152-154
+  s_16fbf3fcf55483::t_da6f8d1048e5a6 99,102-125,134,136-141
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.2",
+  "base_commit_sha": "f1ad235a57e48b2ca7a39190ad36cf1387f408bb",
+  "prompts": {},
+  "sessions": {
+    "s_16fbf3fcf55483": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "880008c7-127e-4dd1-87d4-39268e2b54e1",
+        "model": "moonshotai/kimi-k2.6-20260420:free"
+      },
+      "human_author": "swlws <swlwsgg@gmai.com>"
+    }
+  }
+}
