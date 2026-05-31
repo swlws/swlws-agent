@@ -11,7 +11,9 @@
       "Bash(npx tsc *)",
       "WebSearch",
       "Bash(grep -E \"\\\\.\\(ts|tsx\\)$\")",
-      "Skill(ask)"
+      "Skill(ask)",
+      "Bash(mkdir -p /Users/sunwenlong.33/File/OpenCode/swlws-agent/.claude/skills/ai-commit/references)",
+      "Bash(mkdir -p /Users/sunwenlong.33/File/OpenCode/swlws-agent/.claude/skills/ai-commit/scripts)"
     ]
   }
 }
