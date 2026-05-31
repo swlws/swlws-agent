@@ -1,0 +1,44 @@
+.ai-native-space/skills/skill-link/SKILL.md
+  ai_agent 1-45
+.ai-native-space/skills/skill-link/scripts/link.sh
+  ai_agent 1-70
+.ai-native-space/skills/ai-commit/references/commit-types.md
+  ai_agent 1-77
+.ai-native-space/skills/ai-commit/scripts/suggest-groups.py
+  ai_agent 1-149
+.ai-native-space/skills/project-overview/SKILL.md
+  ai_agent 1-82
+.ai-native-space/skills/ai-commit/SKILL.md
+  ai_agent 1-136
+.claude/settings.local.json
+  s_94572b6e4b045b::t_851788ad56b0cd 14-16
+.ai-native-space/skills/ai-commit/references/examples.md
+  ai_agent 1-65
+.ai-native-space/skills/ai-commit/scripts/analyze-staged.sh
+  ai_agent 1-56
+.ai-native-space/skills/ai-commit/references/grouping-rules.md
+  ai_agent 1-80
+.claude/skills
+  ai_agent 1
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.2",
+  "base_commit_sha": "99dcc0a1208f870a964d0830ef4800c680fc9fb5",
+  "prompts": {},
+  "humans": {
+    "h_9054b55ea37caa": {
+      "author": "swlws"
+    }
+  },
+  "sessions": {
+    "s_94572b6e4b045b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6a8d75d0-77a8-413b-8cc3-743f1dde643f",
+        "model": "mcs-5"
+      },
+      "human_author": "swlws <swlwsgg@gmai.com>"
+    }
+  }
+}
