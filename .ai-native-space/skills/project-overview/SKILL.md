@@ -5,7 +5,7 @@ description: 快速了解当前工程的技术栈、目录结构、核心约定�
 
 # project-overview
 
-一次调用，输出一份「能让陌生人 10 分钟上手」的工程摘要，并写入 `.tmp/project-overview.md` 供后续对话复用。
+一次调用，输出一份「能让陌生人 10 分钟上手」的工程摘要，并写入 `.ai-native-tmp/project-overview.md` 供后续对话复用。
 
 ## 主流程
 
@@ -16,26 +16,26 @@ Step 3 核心模块 → 读关键源文件，提炼业务逻辑与数据流
 Step 4 约定   → 读 .claude/skills/ 枚举所有 skill
 Step 5 状态   → git branch、git status --short 统计未提交变更数
 Step 6 合成   → 按输出格式生成摘要
-Step 7 持久化 → 写入 .tmp/project-overview.md（含生成时间戳）
+Step 7 持久化 → 写入 .ai-native-tmp/project-overview.md（含生成时间戳）
 ```
 
 ## 输出格式
 
 生成摘要时严格遵循以下结构：
 
-~~~markdown
+````markdown
 # 工程概览：<工程名>
 
 > 生成时间：<YYYY-MM-DD HH:mm>
 
 ## 基本信息
 
-| 项目 | 值 |
-|------|----|
-| 技术栈 | <语言 / 框架 / 主要依赖> |
-| 构建工具 | <工具名> |
-| 启动命令 | `<命令>` |
-| 构建命令 | `<命令>` |
+| 项目     | 值                       |
+| -------- | ------------------------ |
+| 技术栈   | <语言 / 框架 / 主要依赖> |
+| 构建工具 | <工具名>                 |
+| 启动命令 | `<命令>`                 |
+| 构建命令 | `<命令>`                 |
 
 ## 目录结构（关键路径）
 
@@ -64,19 +64,19 @@ Step 7 持久化 → 写入 .tmp/project-overview.md（含生成时间戳）
 
 枚举 `.claude/skills/` 下所有子目录，读取每个目录的 `SKILL.md` frontmatter 中的 `name` 和 `description` 字段，生成列表：
 
-| Skill | 说明 |
-|-------|------|
+| Skill    | 说明                       |
+| -------- | -------------------------- |
 | `<name>` | `<description 的第一句话>` |
 
 ## 当前状态
 
 - 分支：`<branch>`
 - 未提交变更：<N> 个文件
-~~~
+````
 
 ## 持久化规则
 
-- 路径：`.tmp/project-overview.md`
-- `.tmp/` 不纳入版本控制
+- 路径：`.ai-native-tmp/project-overview.md`
+- `.ai-native-tmp/` 不纳入版本控制
 - 文件头第二行写入 `> 生成时间：<YYYY-MM-DD HH:mm>`，后续对话读取时可判断是否过期（建议超过 1 天重新生成）
 - 同一 session 内其他 skill 可直接读取该文件获取工程上下文，无需重复分析

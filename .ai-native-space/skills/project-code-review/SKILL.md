@@ -1,6 +1,6 @@
 ---
 name: project-code-review
-description: 对 swlws-agent 工程变更代码执行规范审查 + 业务语义审查，输出 P0/P1/P2 分级结果并写入 .tmp/cr/<日期>.md。在用户提到 code review、审查代码、review 变更、检查规范、@review 时使用。也可由 ai-commit skill 在提交前自动触发。
+description: 对 swlws-agent 工程变更代码执行规范审查 + 业务语义审查，输出 P0/P1/P2 分级结果并写入 .ai-native-tmp/cr/<日期>.md。在用户提到 code review、审查代码、review 变更、检查规范、@review 时使用。也可由 ai-commit skill 在提交前自动触发。
 ---
 
 # project-code-review
@@ -19,19 +19,19 @@ description: 对 swlws-agent 工程变更代码执行规范审查 + 业务语义
 Step 1 采集变更   → git diff --cached（staged）或 git diff HEAD（最近提交）
 Step 2 规范审查   → 执行 [规范审查清单](#规范审查清单)（结构性规则，逐条核对）
 Step 3 语义审查   → 执行 [代码审查（业务语义）](references/rules.md)（P0/P1/P2 分级）
-Step 4 持久化     → 写入 .tmp/cr/<YYYY-MM-DD>.md
+Step 4 持久化     → 写入 .ai-native-tmp/cr/<YYYY-MM-DD>.md
 Step 5 输出结果   → 按 [输出格式](#审查输出格式) 展示
 ```
 
 ## 参考文档
 
-| 主题 | 文件 |
-|------|------|
-| P0 / P1 / P2 规则详细说明 | [references/rules.md](references/rules.md) |
-| 后端架构约定（分层/工具/Runner） | [../project-develop/references/backend.md](../project-develop/references/backend.md) |
-| 前端架构约定（状态/API/组件） | [../project-develop/references/frontend.md](../project-develop/references/frontend.md) |
-| 数据流与 SSE 协议 | [../project-develop/references/dataflow.md](../project-develop/references/dataflow.md) |
-| 类型系统约定 | [../project-develop/references/types.md](../project-develop/references/types.md) |
+| 主题                             | 文件                                                                                   |
+| -------------------------------- | -------------------------------------------------------------------------------------- |
+| P0 / P1 / P2 规则详细说明        | [references/rules.md](references/rules.md)                                             |
+| 后端架构约定（分层/工具/Runner） | [../project-develop/references/backend.md](../project-develop/references/backend.md)   |
+| 前端架构约定（状态/API/组件）    | [../project-develop/references/frontend.md](../project-develop/references/frontend.md) |
+| 数据流与 SSE 协议                | [../project-develop/references/dataflow.md](../project-develop/references/dataflow.md) |
+| 类型系统约定                     | [../project-develop/references/types.md](../project-develop/references/types.md)       |
 
 ---
 
@@ -98,10 +98,10 @@ Step 5 输出结果   → 按 [输出格式](#审查输出格式) 展示
 
 ## 审查结果持久化
 
-每次执行审查，**必须将结果写入 `.tmp/cr/<YYYY-MM-DD>.md`**：
+每次执行审查，**必须将结果写入 `.ai-native-tmp/cr/<YYYY-MM-DD>.md`**：
 
 - 同日多次审查追加到同一文件末尾（附时间戳分隔符 `---`）
-- `.tmp/` 目录不纳入版本控制
+- `.ai-native-tmp/` 目录不纳入版本控制
 - 格式与「审查输出格式」保持一致
 
 ---
@@ -110,11 +110,11 @@ Step 5 输出结果   → 按 [输出格式](#审查输出格式) 展示
 
 被 ai-commit Phase 1.5 触发时，审查结果影响后续提交选项：
 
-| 最高级别 | 行为 |
-|---------|------|
-| **P0** | 禁止出现「直接提交」选项，只能「修复后重新运行」或「取消」 |
-| **P1** | 增加「忽略 P1 直接提交」选项，默认推荐「先修复」 |
-| 仅 **P2 / 规范问题** | 正常提交，审查摘要附在 commit body 末尾 |
+| 最高级别             | 行为                                                       |
+| -------------------- | ---------------------------------------------------------- |
+| **P0**               | 禁止出现「直接提交」选项，只能「修复后重新运行」或「取消」 |
+| **P1**               | 增加「忽略 P1 直接提交」选项，默认推荐「先修复」           |
+| 仅 **P2 / 规范问题** | 正常提交，审查摘要附在 commit body 末尾                    |
 
 ---
 
@@ -126,11 +126,11 @@ Step 5 输出结果   → 按 [输出格式](#审查输出格式) 展示
 
 **选项**：
 
-| 选项 | 行为 |
-|------|------|
-| 本轮对话临时跳过 | 仅本次对话中不再提示该问题，下次重新生效 |
-| 永久豁免此规则 | 将豁免记录写入 `references/rules.md` 的豁免列表 |
-| 仍需修复 | 维持原判，继续要求修复 |
+| 选项             | 行为                                            |
+| ---------------- | ----------------------------------------------- |
+| 本轮对话临时跳过 | 仅本次对话中不再提示该问题，下次重新生效        |
+| 永久豁免此规则   | 将豁免记录写入 `references/rules.md` 的豁免列表 |
+| 仍需修复         | 维持原判，继续要求修复                          |
 
 **永久豁免写入规范**：追加到 `references/rules.md` 末尾的豁免列表（格式见该文件），并在每次审查前读取豁免列表，命中规则跳过不输出。
 

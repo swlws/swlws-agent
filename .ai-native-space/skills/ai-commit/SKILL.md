@@ -48,10 +48,11 @@ git diff --cached --name-only
 **仅当 staged 文件包含 `src/` 下的 `.ts` / `.tsx` 文件时执行。**
 
 调用 [project-code-review](../project-code-review/SKILL.md)，依次执行：
+
 - **规范审查**：[规范审查清单](../project-code-review/SKILL.md#规范审查清单)
 - **业务语义审查**：[P0/P1/P2 规则](../project-code-review/references/rules.md)
 
-审查结果在 Phase 3 中紧跟提交计划输出，并写入 `.tmp/cr/<YYYY-MM-DD>.md`；Phase 4 选项依据最高优先级联动：
+审查结果在 Phase 3 中紧跟提交计划输出，并写入 `.ai-native-tmp/cr/<YYYY-MM-DD>.md`；Phase 4 选项依据最高优先级联动：
 
 - **P0** → 禁止提交，只能「修复后重新运行」或「取消」
 - **P1** → 增加「忽略 P1 直接提交」，默认推荐「先修复」
@@ -76,6 +77,7 @@ git diff --cached --name-only
 ## 提交计划（共 N 组）
 
 ### 组 1/N — feat(scope)
+
 - **文件**：`path/a`, `path/b`
 - **说明**：一句话 rationale
 - **Message**：`feat(scope): 描述`
@@ -85,11 +87,11 @@ git diff --cached --name-only
 
 **层 A 选项**：
 
-| 标签 | 行为 |
-|------|------|
+| 标签           | 行为         |
+| -------------- | ------------ |
 | 全部确认并提交 | 进入 Phase 5 |
-| 取消 | 零副作用结束 |
-| 修改计划 | 进入层 B |
+| 取消           | 零副作用结束 |
+| 修改计划       | 进入层 B     |
 
 **层 B — 修改计划**（用户选「修改计划」时）：合并组、拆组、改 message、换分组维度、从计划剔除文件（保留 staged）、`back` 回层 A。
 
