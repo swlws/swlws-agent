@@ -1,5 +1,8 @@
 import { useState, useEffect, useCallback, useRef, memo } from "react";
 import type { AgentMode } from "@/fe/apis/settings";
+import { getMcpServers, type McpServerStatus } from "@/fe/apis/mcp";
+import { getSkills, type SkillMeta } from "@/fe/apis/skills";
+import { SlashMenu } from "./SlashMenu";
 
 // line-height: 24px (leading-6), padding-top: 12px, padding-bottom: 4px
 const LINE_HEIGHT = 24;
@@ -28,7 +31,21 @@ export const InputBar = memo(function InputBar({
 }: InputBarProps) {
   const [value, setValue] = useState("");
   const [deepThink, setDeepThink] = useState(false);
+  const [mcpServers, setMcpServers] = useState<McpServerStatus[]>([]);
+  const [skills, setSkills] = useState<SkillMeta[]>([]);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  const showSlashMenu = value === "/" && (mcpServers.length > 0 || skills.length > 0);
+
+  useEffect(() => {
+    let ignore = false;
+    Promise.all([getMcpServers(), getSkills()]).then(([mcp, sk]) => {
+      if (ignore) return;
+      setMcpServers(mcp);
+      setSkills(sk.filter((s) => s.enabled));
+    });
+    return () => { ignore = true; };
+  }, []);
 
   // 每次内容变化时自适应高度，限制在 MIN_ROWS ~ MAX_ROWS 行
   useEffect(() => {
@@ -54,16 +71,32 @@ export const InputBar = memo(function InputBar({
   }, [value, onSend, deepThink]);
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === "Escape" && showSlashMenu) {
+      setValue("");
+      return;
+    }
     if (e.key === "Enter" && !e.shiftKey && !e.nativeEvent.isComposing) {
       e.preventDefault();
       handleSend();
     }
   };
 
+  const handleSlashSelect = (command: string) => {
+    setValue(command);
+    textareaRef.current?.focus();
+  };
+
   return (
     <div className="bg-white px-4 py-4 dark:border-[#3f3f46] dark:bg-[#212121] sm:px-6">
       <div className="mx-auto w-full max-w-3xl">
-        <div className="rounded-3xl border border-gray-300 bg-white shadow-sm transition-colors focus-within:border-gray-400 dark:border-[#4a4a4a] dark:bg-[#2f2f2f] dark:focus-within:border-[#666]">
+        <div className="relative rounded-3xl border border-gray-300 bg-white shadow-sm transition-colors focus-within:border-gray-400 dark:border-[#4a4a4a] dark:bg-[#2f2f2f] dark:focus-within:border-[#666]">
+          {showSlashMenu && (
+            <SlashMenu
+              mcpServers={mcpServers}
+              skills={skills}
+              onSelect={handleSlashSelect}
+            />
+          )}
           <textarea
             ref={textareaRef}
             value={value}
