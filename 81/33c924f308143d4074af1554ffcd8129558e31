@@ -1,0 +1,31 @@
+.ai-native-tmp/prd/输入框交互优化-final.md
+  s_16fbf3fcf55483::t_0828e3c177428c 1-81
+.ai-native-tmp/trd/输入框交互优化.md
+  s_16fbf3fcf55483::t_e6c56bd12f7880 3-4,13-18,24,26,32,34,36-37,39,41,45-50,52-59,63-64,66-74,82-85,91,93,95-99,101-104,106,110,112,114-119,121,125,127,135-139,141,149-151,159-168,172-175,179
+.ai-native-tmp/prd/输入框交互优化.md
+  s_16fbf3fcf55483::t_40d31f341af082 9-13,15-18,20-23,25-28,36-39,41-44,46-49,51-54
+  h_8b2f1d92a5ba33 14,19,24,29-35,40,45,50,55
+.ai-native-tmp/cr/2026-05-31.md
+  ai_agent 1-22
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.2",
+  "base_commit_sha": "8133c924f308143d4074af1554ffcd8129558e31",
+  "prompts": {},
+  "humans": {
+    "h_8b2f1d92a5ba33": {
+      "author": "swlws <swlwsgg@gmai.com>"
+    }
+  },
+  "sessions": {
+    "s_16fbf3fcf55483": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "880008c7-127e-4dd1-87d4-39268e2b54e1",
+        "model": "poolside/laguna-xs.2-20260421:free"
+      },
+      "human_author": "swlws <swlwsgg@gmai.com>"
+    }
+  }
+}
