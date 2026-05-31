@@ -1,0 +1,34 @@
+.ai-native-space/skills/project-prd/SKILL.md
+  s_94572b6e4b045b::t_962bb6fe354aa0 1-2,4-7,9-17,19-24,26-49,51-68,70-74,77,79-90,92-97,99-121,124-140
+  h_8b2f1d92a5ba33 3,8,18,25,50,69,75-76,78,91,98,122-123
+.ai-native-space/skills/project-prd/references/risks.md
+  s_94572b6e4b045b::t_fb94ceb1a2829d 1-70
+.ai-native-space/skills/project-prd/references/completeness.md
+  s_94572b6e4b045b::t_269a9ac4eb0fbe 1-52
+.ai-native-space/skills/project-prd/references/trd-template.md
+  s_94572b6e4b045b::t_6a7799bd01ecda 1-190
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.2",
+  "base_commit_sha": "a889f22e7b128831f35863e2a9b3276578177c0d",
+  "prompts": {},
+  "humans": {
+    "h_8b2f1d92a5ba33": {
+      "author": "swlws <swlwsgg@gmai.com>"
+    },
+    "h_9054b55ea37caa": {
+      "author": "swlws"
+    }
+  },
+  "sessions": {
+    "s_94572b6e4b045b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6a8d75d0-77a8-413b-8cc3-743f1dde643f",
+        "model": "mcs-5"
+      },
+      "human_author": "swlws <swlwsgg@gmai.com>"
+    }
+  }
+}
