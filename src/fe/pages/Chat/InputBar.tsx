@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef, memo } from "react";
+import { useState, useEffect, useCallback, useRef, useMemo, memo } from "react";
 import type { AgentMode } from "@/fe/apis/settings";
 import { getMcpServers, type McpServerStatus } from "@/fe/apis/mcp";
 import { getSkills, type SkillMeta } from "@/fe/apis/skills";
@@ -33,9 +33,32 @@ export const InputBar = memo(function InputBar({
   const [deepThink, setDeepThink] = useState(false);
   const [mcpServers, setMcpServers] = useState<McpServerStatus[]>([]);
   const [skills, setSkills] = useState<SkillMeta[]>([]);
+  const [activeIndex, setActiveIndex] = useState(-1);
+  const [slashMenuClosed, setSlashMenuClosed] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  const showSlashMenu = value === "/" && (mcpServers.length > 0 || skills.length > 0);
+  const showSlashMenu = value.startsWith("/") && !slashMenuClosed;
+  const query = value.slice(1);
+
+  // Compute filtered items for rendering
+  const filteredMcp = useMemo(() => {
+    const q = query.toLowerCase();
+    return mcpServers.filter((s) => s.name.toLowerCase().includes(q));
+  }, [mcpServers, query]);
+
+  const filteredSkills = useMemo(() => {
+    const q = query.toLowerCase();
+    return skills
+      .filter((s) => s.enabled)
+      .filter((s) => s.name.toLowerCase().includes(q) || s.displayName.toLowerCase().includes(q));
+  }, [skills, query]);
+
+  const filteredCount = filteredMcp.length + filteredSkills.length;
+
+  // Clamp activeIndex to valid range whenever filteredCount changes
+  useEffect(() => {
+    setActiveIndex((i) => Math.max(-1, Math.min(i, Math.max(0, filteredCount - 1))));
+  }, [filteredCount]);
 
   useEffect(() => {
     let ignore = false;
@@ -73,7 +96,32 @@ export const InputBar = memo(function InputBar({
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Escape" && showSlashMenu) {
       setValue("");
+      setActiveIndex(-1);
       return;
+    }
+    if (showSlashMenu && !e.nativeEvent.isComposing) {
+      if (e.key === "ArrowDown") {
+        e.preventDefault();
+        setActiveIndex((i) => Math.min(i + 1, filteredCount - 1));
+        return;
+      }
+      if (e.key === "ArrowUp") {
+        e.preventDefault();
+        setActiveIndex((i) => Math.max(i - 1, -1));
+        return;
+      }
+      if (e.key === "Enter") {
+        e.preventDefault();
+        if (activeIndex >= 0 && filteredCount > 0) {
+          // Build flat list of commands for the current filtered state
+          const flatItems = [
+            ...filteredMcp.map((s) => `@${s.name} `),
+            ...filteredSkills.map((s) => (s.command ? `${s.command} ` : `/${s.name} `)),
+          ];
+          setSelectedCommand(flatItems[activeIndex]);
+          return;
+        }
+      }
     }
     if (e.key === "Enter" && !e.shiftKey && !e.nativeEvent.isComposing) {
       e.preventDefault();
@@ -83,6 +131,15 @@ export const InputBar = memo(function InputBar({
 
   const handleSlashSelect = (command: string) => {
     setValue(command);
+    setActiveIndex(-1);
+    setSlashMenuClosed(true);
+    textareaRef.current?.focus();
+  };
+
+  const setSelectedCommand = (cmd: string) => {
+    setValue(cmd);
+    setActiveIndex(-1);
+    setSlashMenuClosed(true);
     textareaRef.current?.focus();
   };
 
@@ -92,15 +149,19 @@ export const InputBar = memo(function InputBar({
         <div className="relative rounded-3xl border border-gray-300 bg-white shadow-sm transition-colors focus-within:border-gray-400 dark:border-[#4a4a4a] dark:bg-[#2f2f2f] dark:focus-within:border-[#666]">
           {showSlashMenu && (
             <SlashMenu
-              mcpServers={mcpServers}
-              skills={skills}
+              mcpServers={filteredMcp}
+              skills={filteredSkills}
+              activeIndex={activeIndex}
               onSelect={handleSlashSelect}
             />
           )}
           <textarea
             ref={textareaRef}
             value={value}
-            onChange={(e) => setValue(e.target.value)}
+            onChange={(e) => {
+              setValue(e.target.value);
+              setSlashMenuClosed(false);
+            }}
             onKeyDown={handleKeyDown}
             placeholder="输入消息…"
             disabled={disabled}
