@@ -1,0 +1,25 @@
+.ai-native-space/skills/ai-commit/SKILL.md
+  s_94572b6e4b045b::t_6a22d9714d1935 23-24
+  s_94572b6e4b045b::t_9fc9bc41b15539 46-59
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.2",
+  "base_commit_sha": "2386afc8ec7104fd2d1ace7427465a097a2eed82",
+  "prompts": {},
+  "humans": {
+    "h_9054b55ea37caa": {
+      "author": "swlws"
+    }
+  },
+  "sessions": {
+    "s_94572b6e4b045b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6a8d75d0-77a8-413b-8cc3-743f1dde643f",
+        "model": "mcs-5"
+      },
+      "human_author": "swlws <swlwsgg@gmai.com>"
+    }
+  }
+}
