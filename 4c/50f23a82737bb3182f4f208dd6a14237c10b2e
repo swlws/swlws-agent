@@ -1,0 +1,12 @@
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.2",
+  "base_commit_sha": "4c50f23a82737bb3182f4f208dd6a14237c10b2e",
+  "prompts": {},
+  "humans": {
+    "h_9054b55ea37caa": {
+      "author": "swlws"
+    }
+  }
+}
