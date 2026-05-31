@@ -20,8 +20,8 @@ description: 分析 git 暂存区变更，按模块/类型分组生成「特性(
 ## 工作流
 
 ```
-Phase 0 前置检查 → Phase 1 采集 → Phase 2 分组与文案
-→ Phase 3 展示计划 → Phase 4 AskQuestion 确认
+Phase 0 前置检查 → Phase 1 采集 → Phase 1.5 代码审查（project-code-review）
+→ Phase 2 分组与文案 → Phase 3 展示计划 → Phase 4 AskQuestion 确认
 → Phase 5 执行 → Phase 6 摘要
 ```
 
@@ -42,6 +42,20 @@ git diff --cached --name-only
 ```
 
 可选：运行 `scripts/analyze-staged.sh` 得 JSON；`scripts/suggest-groups.py` 得分组建议（Agent 可覆盖）。
+
+### Phase 1.5 — 代码审查（project-code-review）
+
+**仅当 staged 文件包含 `src/` 下的 `.ts` / `.tsx` 文件时执行。**
+
+调用 [project-code-review](../project-code-review/SKILL.md)，依次执行：
+- **规范审查**：[规范审查清单](../project-code-review/SKILL.md#规范审查清单)
+- **业务语义审查**：[P0/P1/P2 规则](../project-code-review/references/rules.md)
+
+审查结果在 Phase 3 中紧跟提交计划输出，并写入 `.tmp/cr/<YYYY-MM-DD>.md`；Phase 4 选项依据最高优先级联动：
+
+- **P0** → 禁止提交，只能「修复后重新运行」或「取消」
+- **P1** → 增加「忽略 P1 直接提交」，默认推荐「先修复」
+- 仅 **P2 / 规范问题** → 正常提交，问题附在 commit body 末尾
 
 ### Phase 2 — 分组与 message
 
