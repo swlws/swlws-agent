@@ -1,0 +1,31 @@
+.ai-native-tmp/prd/输入框交互优化.md
+  h_8b2f1d92a5ba33 6-20
+.ai-native-tmp/trd/输入框交互优化.md
+  s_16fbf3fcf55483::t_cd989d1bf8023e 1-155
+.claude/settings.local.json
+  s_16fbf3fcf55483::t_4a75d8a0dce17f 16-18
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.2",
+  "base_commit_sha": "0daab61312eaa9074ed5ca71c69a2e025c718ee5",
+  "prompts": {},
+  "humans": {
+    "h_8b2f1d92a5ba33": {
+      "author": "swlws <swlwsgg@gmai.com>"
+    },
+    "h_9054b55ea37caa": {
+      "author": "swlws"
+    }
+  },
+  "sessions": {
+    "s_16fbf3fcf55483": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "880008c7-127e-4dd1-87d4-39268e2b54e1",
+        "model": "mcs-5"
+      },
+      "human_author": "swlws <swlwsgg@gmai.com>"
+    }
+  }
+}
