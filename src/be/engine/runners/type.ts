@@ -6,6 +6,7 @@ export const enum CardType {
   Cot = 2,
   Error = 3,
   Image = 4,
+  Bash = 6,
 }
 
 export interface RunnerHandlers {

@@ -5,7 +5,33 @@ import { streamCompletion } from "@/be/lib/llm/provider";
 import { logger } from "@/be/lib/logger";
 
 /** Token 预算：累计消耗超过此值时，完成当前迭代后优雅退出（软约束） */
-const TOKEN_BUDGET = 32_000;
+const TOKEN_BUDGET = 128_000;
+
+/** Bash 卡片展示的执行结果最大字符数（仅影响前端展示，不影响喂给模型的完整结果） */
+const BASH_OUTPUT_DISPLAY_LIMIT = 2000;
+
+/**
+ * 从工具调用中提取展示用的「命令行」。
+ * run_command → 真实命令；其他工具 → `工具名 参数摘要`。
+ */
+function extractCommand(toolName: string, rawArgs: string): string {
+  let parsed: Record<string, unknown> = {};
+  try {
+    parsed = JSON.parse(rawArgs) as Record<string, unknown>;
+  } catch {
+    // 参数非法 JSON，回退到原始串
+  }
+
+  if (toolName === "run_command" && typeof parsed.command === "string") {
+    return parsed.command;
+  }
+
+  const argsSummary = rawArgs?.trim();
+  if (argsSummary && argsSummary !== "{}") {
+    return `${toolName} ${argsSummary}`;
+  }
+  return toolName;
+}
 
 export interface ReActOptions {
   signal?: AbortSignal;
@@ -63,7 +89,9 @@ export async function runReActLoop(
 
     for await (const chunk of stream) {
       if (chunk.type === "usage") {
-        usedTokens += chunk.totalTokens;
+        // total_tokens 是「当前对话累计值」（prompt+completion），非增量。
+        // 取最大值而非累加，避免把每轮的累计量重复叠加导致预算被瞬间撑爆。
+        usedTokens = Math.max(usedTokens, chunk.totalTokens);
         continue;
       }
 
@@ -144,15 +172,19 @@ export async function runReActLoop(
       if (result.isImage) {
         onToken(CardType.Image, result.content);
       } else {
-        const observationBlock =
-          "\n\n> **Observation（" +
-          tc.function.name +
-          "）**\n> " +
-          result.content.split("\n").join("\n> ") +
-          "\n\n";
-
-        fullReply += observationBlock;
-        onToken(CardType.Cot, observationBlock);
+        // 工具调用用独立的 Bash 卡片展示：命令 + 执行结果。
+        // 每个块以记录分隔符 \x1e 起始 + JSON，前端据此拆分同卡内的多次调用。
+        // 展示层结果截断，喂给模型的 messages 仍是完整结果。
+        const command = extractCommand(tc.function.name, tc.function.arguments);
+        const output =
+          result.content.length > BASH_OUTPUT_DISPLAY_LIMIT
+            ? result.content.slice(0, BASH_OUTPUT_DISPLAY_LIMIT) +
+              "\n…(结果过长已截断)"
+            : result.content;
+        const block =
+          "\x1e" +
+          JSON.stringify({ command, output, isError: result.isError });
+        onToken(CardType.Bash, block);
       }
 
       messages.push({

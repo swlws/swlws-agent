@@ -6,6 +6,7 @@ export const enum CardType {
   Error = 3,
   Image = 4,
   Divider = 5,
+  Bash = 6,
 }
 
 export interface MessageCard {

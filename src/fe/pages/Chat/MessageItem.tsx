@@ -1,6 +1,7 @@
 import { memo, useState, useCallback } from "react";
 import MarkdownView from "@/fe/cards/mardown-card";
 import { CotCard } from "@/fe/cards/cot-card";
+import { BashCard } from "@/fe/cards/bash-card";
 import { ErrorCard } from "@/fe/cards/error-card";
 import { ImageCard } from "@/fe/cards/image-card";
 import { DividerCard } from "@/fe/cards/divider-card";
@@ -70,6 +71,15 @@ export const MessageItem = memo(function MessageItem({
                 if (card.cardType === CardType.Cot) {
                   return (
                     <CotCard
+                      key={idx}
+                      content={card.content}
+                      streaming={isStreaming && isLastCard}
+                    />
+                  );
+                }
+                if (card.cardType === CardType.Bash) {
+                  return (
+                    <BashCard
                       key={idx}
                       content={card.content}
                       streaming={isStreaming && isLastCard}
