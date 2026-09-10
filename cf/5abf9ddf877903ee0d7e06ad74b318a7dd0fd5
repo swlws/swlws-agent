@@ -1,0 +1,52 @@
+src/be/engine/tools/readFile.ts
+  s_c4937996649a68::t_9d70a56430b92a 25,28-31,39
+  s_c4937996649a68::t_bf562bda0dd514 2
+src/be/engine/tools/runCommand.ts
+  s_c4937996649a68::t_b90960b83d13f8 47-48,62-65,68-71,73-74
+  s_c4937996649a68::t_bd76e1d80f9a39 2
+src/be/engine/tools/mcp/index.ts
+  s_c4937996649a68::t_9f5a5399d71af2 53-56
+  s_c4937996649a68::t_e6062e790615b0 66
+  s_c4937996649a68::t_28613db0d6a30f 5
+src/be/memory/mindcards.ts
+  s_c4937996649a68::t_9af4224c3a1521 91-93
+  s_c4937996649a68::t_a15001fc4a59af 3
+src/be/engine/tools/writeFile.ts
+  s_c4937996649a68::t_05bc92504e7761 4
+  s_c4937996649a68::t_a8127846fdf919 29-32,37,41
+src/be/engine/runners/common/react-core.ts
+  s_c4937996649a68::t_d28684b9253e28 117-120,131,133-137
+  s_c4937996649a68::t_527933f5894d95 5
+  s_c4937996649a68::t_808d480290b7ab 73
+  s_c4937996649a68::t_113cb7ad80dc68 38,41-45,48-49
+src/be/engine/skills/index.ts
+  s_c4937996649a68::t_3b335df6f18088 58
+  s_c4937996649a68::t_f888136e211ecf 4
+src/be/lib/llm/provider.ts
+  s_c4937996649a68::t_24e4f01a9ebf64 53-57
+  s_c4937996649a68::t_93493088ca0cc2 2
+src/be/engine/index.ts
+  s_c4937996649a68::t_6de7414cd480b6 114-117,121
+  s_c4937996649a68::t_d8f758ad83e1e3 57-62
+  s_c4937996649a68::t_a1758ba17a27fb 92-94,118,120,122
+  s_c4937996649a68::t_4aebe732cbf843 25
+  s_c4937996649a68::t_7986358747c6d7 28
+  s_c4937996649a68::t_8baa5b1b03f7dd 155-156,158-161
+  s_c4937996649a68::t_50bb3e3399b688 119
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "cf5abf9ddf877903ee0d7e06ad74b318a7dd0fd5",
+  "prompts": {},
+  "sessions": {
+    "s_c4937996649a68": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b155ca53-9ff0-4c43-9797-5dd7d9ae6f47",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "swlws <swlwsgg@gmai.com>"
+    }
+  }
+}
