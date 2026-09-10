@@ -1,0 +1,19 @@
+src/be/engine/skills/executor.ts
+  s_c4937996649a68::t_934cde8660368a 1-3,30-34,36
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "68e20b1de8a95e1391847a3c2075f177bae09e4e",
+  "prompts": {},
+  "sessions": {
+    "s_c4937996649a68": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b155ca53-9ff0-4c43-9797-5dd7d9ae6f47",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "swlws <swlwsgg@gmai.com>"
+    }
+  }
+}
