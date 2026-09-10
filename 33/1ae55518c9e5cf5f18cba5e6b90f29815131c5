@@ -1,0 +1,28 @@
+src/be/engine/tools/writeFile.ts
+  s_c4937996649a68::t_6e625c962f52a4 1-38
+src/be/session/index.ts
+  s_c4937996649a68::t_f89bd04c862134 6
+src/be/engine/tools/runCommand.ts
+  s_c4937996649a68::t_dddde2f698e895 1-74
+src/be/engine/tools/index.ts
+  s_c4937996649a68::t_346f7358d83654 3-5
+  s_c4937996649a68::t_9f592961f2f7ac 23-28
+src/be/engine/tools/readFile.ts
+  s_c4937996649a68::t_bba0251a23a992 1-36
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "331ae55518c9e5cf5f18cba5e6b90f29815131c5",
+  "prompts": {},
+  "sessions": {
+    "s_c4937996649a68": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b155ca53-9ff0-4c43-9797-5dd7d9ae6f47",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "swlws <swlwsgg@gmai.com>"
+    }
+  }
+}
