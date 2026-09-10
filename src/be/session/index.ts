@@ -3,7 +3,7 @@ import path from "path";
 import { SESSIONS_DIR } from "@/be/config/paths";
 const writeLocks = new Map<string, Promise<void>>();
 
-async function lockedWrite(filePath: string, data: string): Promise<void> {
+export async function lockedWrite(filePath: string, data: string): Promise<void> {
   const prev = writeLocks.get(filePath) ?? Promise.resolve();
   let resolveCurrent!: () => void;
   const current = new Promise<void>((r) => {

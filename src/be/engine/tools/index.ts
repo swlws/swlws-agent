@@ -1,5 +1,8 @@
 import type OpenAI from "openai";
 import { imageGenerateTool } from "./imageGenerate";
+import { runCommandTool } from "./runCommand";
+import { readFileTool } from "./readFile";
+import { writeFileTool } from "./writeFile";
 import { mcpManager, parseMcpToolName } from "./mcp";
 import { skillManager } from "@/be/engine/skills";
 
@@ -17,7 +20,12 @@ export interface ToolResult {
 }
 
 /** 静态工具（随进程启动固定注册） */
-const staticTools: Tool[] = [imageGenerateTool];
+const staticTools: Tool[] = [
+  imageGenerateTool,
+  runCommandTool,
+  readFileTool,
+  writeFileTool,
+];
 
 function getAllTools(): Tool[] {
   return [
