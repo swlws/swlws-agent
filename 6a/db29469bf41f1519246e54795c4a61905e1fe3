@@ -1,0 +1,38 @@
+src/be/lib/llm/openai-adapter.ts
+  s_c4937996649a68::t_8bf71bb6b8d532 1-14,16-25,27-57
+  s_c4937996649a68::t_dded538513eece 15,26
+src/be/engine/runners/common/react-core.ts
+  s_c4937996649a68::t_7e0d4aec3ae32c 1,4
+  s_c4937996649a68::t_0ce4a05ab24e3a 42-47,55-58,61,63-64,68-71,74-77,79-81
+src/be/lib/llm/anthropic-adapter.ts
+  s_c4937996649a68::t_132298d11208fa 31-40
+  s_c4937996649a68::t_d1024a7a979e0b 138,145
+  s_c4937996649a68::t_0e97c76d49b9a8 1-30,41-137,139-144,146-148,151-198
+  s_c4937996649a68::t_75656cf7cad7c6 149-150
+package.json
+  s_c4937996649a68::t_cb2b9159cb5fc5 12
+src/be/lib/llm/provider.ts
+  s_c4937996649a68::t_34553842c5872c 1-10,12-60
+  s_c4937996649a68::t_456251a443fc8a 11
+src/be/lib/text-llm.ts
+  s_c4937996649a68::t_8bbb940ce21764 26,32
+  s_c4937996649a68::t_81525f8057dac9 1-2,28-29,33-36,47,49-54
+package-lock.json
+  s_c4937996649a68::t_4a280a70fdcd47 2,8,11,45-74,1127-1132,3762-3767,4903-4915,7558-7567,7919-7924
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "6adb29469bf41f1519246e54795c4a61905e1fe3",
+  "prompts": {},
+  "sessions": {
+    "s_c4937996649a68": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b155ca53-9ff0-4c43-9797-5dd7d9ae6f47",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "swlws <swlwsgg@gmai.com>"
+    }
+  }
+}
