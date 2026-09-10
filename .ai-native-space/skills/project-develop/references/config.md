@@ -12,6 +12,7 @@
 | `SWLWS_IMAGE_GEN_MODEL` | 图片生成模型名 | 仅图片功能 |
 | `SWLWS_SEARCH_API_KEY` | 搜索 API Key | 仅搜索功能 |
 | `SWLWS_SEARCH_BASE_URL` | 搜索 Base URL | 仅搜索功能 |
+| `SWLWS_LOG_LEVEL` | 后端日志级别：`debug` / `info` / `warn` / `error`，默认 `info`（不合法值回退 `info`）。见 `src/be/lib/logger.ts` | 否 |
 
 新增功能如需环境变量，命名遵循 `SWLWS_<SERVICE>_<FIELD>` 规范。
 
