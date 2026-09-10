@@ -1,6 +1,7 @@
-import OpenAI from "openai";
+import type OpenAI from "openai";
 import { getToolDefinitions, executeTool } from "@/be/engine/tools";
 import { CardType } from "@/be/engine/runners/type";
+import { streamCompletion } from "@/be/lib/llm/provider";
 
 /** Token 预算：累计消耗超过此值时，完成当前迭代后优雅退出（软约束） */
 const TOKEN_BUDGET = 32_000;
@@ -10,12 +11,6 @@ export interface ReActOptions {
   temperature?: number;
   /** 若为 true，直接操作传入的 messages 数组（不复制），用于 Reflection 共享上下文 */
   mutable?: boolean;
-}
-
-export function createClient(): OpenAI {
-  const apiKey = process.env.SWLWS_TEXT_LLM_API_KEY;
-  if (!apiKey) throw new Error("SWLWS_TEXT_LLM_API_KEY is not set");
-  return new OpenAI({ apiKey, baseURL: process.env.SWLWS_TEXT_LLM_BASE_URL });
 }
 
 export function resolveModel(): string {
@@ -34,7 +29,6 @@ export async function runReActLoop(
   options: ReActOptions = {},
 ): Promise<string> {
   const { signal, temperature = 0.7, mutable = false } = options;
-  const client = createClient();
   const model = resolveModel();
   const toolDefinitions = getToolDefinitions();
 
@@ -45,18 +39,12 @@ export async function runReActLoop(
   while (usedTokens < TOKEN_BUDGET) {
     if (signal?.aborted) break;
 
-    const response = await client.chat.completions.create(
-      {
-        model,
-        messages,
-        tools: toolDefinitions,
-        tool_choice: "auto",
-        stream: true,
-        stream_options: { include_usage: true },
-        temperature,
-      },
-      { signal },
-    );
+    const stream = streamCompletion(model, {
+      messages,
+      tools: toolDefinitions,
+      temperature,
+      signal,
+    });
 
     let stepText = "";
     const toolCallChunks: Record<
@@ -64,44 +52,33 @@ export async function runReActLoop(
       { id: string; name: string; arguments: string }
     > = {};
 
-    for await (const chunk of response) {
-      if (chunk.usage) {
-        usedTokens += chunk.usage.total_tokens;
+    for await (const chunk of stream) {
+      if (chunk.type === "usage") {
+        usedTokens += chunk.totalTokens;
+        continue;
       }
 
-      const delta = chunk.choices[0]?.delta;
-      if (!delta) continue;
-
-      if (delta.content) {
+      if (chunk.type === "text") {
         // 过滤误输出的 TOOLCALL 行，防止被当作普通文本展示
-        if (
-          typeof delta.content === "string" &&
-          delta.content.trim().startsWith("TOOLCALL>")
-        ) {
-          console.log("跳过 TOOLCALL 行", delta.content);
+        if (chunk.text.trim().startsWith("TOOLCALL>")) {
+          console.log("跳过 TOOLCALL 行", chunk.text);
           // 跳过此内容，不触发 token 回调
           continue;
         }
-        stepText += delta.content;
-        fullReply += delta.content;
-        onToken(CardType.Markdown, delta.content);
+        stepText += chunk.text;
+        fullReply += chunk.text;
+        onToken(CardType.Markdown, chunk.text);
+        continue;
       }
 
-      if (delta.tool_calls) {
-        for (const tc of delta.tool_calls) {
-          const idx = tc.index ?? 0;
-          if (!toolCallChunks[idx]) {
-            toolCallChunks[idx] = {
-              id: tc.id ?? "",
-              name: "",
-              arguments: "",
-            };
-          }
-          if (tc.function?.name) toolCallChunks[idx].name += tc.function.name;
-          if (tc.function?.arguments)
-            toolCallChunks[idx].arguments += tc.function.arguments;
-          if (tc.id) toolCallChunks[idx].id = tc.id;
+      if (chunk.type === "tool_call") {
+        const idx = chunk.index;
+        if (!toolCallChunks[idx]) {
+          toolCallChunks[idx] = { id: "", name: "", arguments: "" };
         }
+        if (chunk.name) toolCallChunks[idx].name += chunk.name;
+        if (chunk.argsDelta) toolCallChunks[idx].arguments += chunk.argsDelta;
+        if (chunk.id) toolCallChunks[idx].id = chunk.id;
       }
     }
 
