@@ -1,0 +1,19 @@
+.ai-native-tmp/cr/2026-09-10.md
+  s_c4937996649a68::t_8a7a01b9a3d7f7 140-169
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "2b61d3c050a80c0d11d7770fbbd5c13ff00cc246",
+  "prompts": {},
+  "sessions": {
+    "s_c4937996649a68": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b155ca53-9ff0-4c43-9797-5dd7d9ae6f47",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "swlws <swlwsgg@gmai.com>"
+    }
+  }
+}
