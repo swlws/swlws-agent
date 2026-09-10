@@ -5,7 +5,7 @@
 | 变量 | 用途 | 必须 |
 |------|------|------|
 | `SWLWS_TEXT_LLM_API_KEY` | 文本 LLM API Key | ✅ |
-| `SWLWS_TEXT_LLM_BASE_URL` | 文本 LLM Base URL（OpenAI 兼容格式）| ✅ |
+| `SWLWS_TEXT_LLM_BASE_URL` | 文本 LLM Base URL（按 URL 自动识别协议：含 `/messages` 或 `anthropic` 走 Anthropic Messages，否则走 OpenAI 兼容）| ✅ |
 | `SWLWS_TEXT_LLM_MODEL` | 文本 LLM 模型名 | ✅ |
 | `SWLWS_IMAGE_GEN_API_KEY` | 图片生成 API Key | 仅图片功能 |
 | `SWLWS_IMAGE_GEN_BASE_URL` | 图片生成 Base URL | 仅图片功能 |
