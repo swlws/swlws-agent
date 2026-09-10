@@ -1,0 +1,21 @@
+.ai-native-space/skills/project-develop/references/config.md
+  s_c4937996649a68::t_0a240a51cf2090 15
+.ai-native-tmp/cr/2026-09-10.md
+  s_c4937996649a68::t_8ae88aa0cfdc8b 113-136
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "7fd0bb0c316b82b3c6c369138f4197aab0710e63",
+  "prompts": {},
+  "sessions": {
+    "s_c4937996649a68": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b155ca53-9ff0-4c43-9797-5dd7d9ae6f47",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "swlws <swlwsgg@gmai.com>"
+    }
+  }
+}
