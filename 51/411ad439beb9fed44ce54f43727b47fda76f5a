@@ -1,0 +1,14 @@
+.gitignore
+  h_8b2f1d92a5ba33 46-48
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "51411ad439beb9fed44ce54f43727b47fda76f5a",
+  "prompts": {},
+  "humans": {
+    "h_8b2f1d92a5ba33": {
+      "author": "swlws <swlwsgg@gmai.com>"
+    }
+  }
+}
