@@ -1,0 +1,19 @@
+src/be/lib/logger.ts
+  s_c4937996649a68::t_a2ab498a71fa60 1-80
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "b5fbbbeb14527847cd8478ae151fbdca6d3cf97d",
+  "prompts": {},
+  "sessions": {
+    "s_c4937996649a68": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b155ca53-9ff0-4c43-9797-5dd7d9ae6f47",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "swlws <swlwsgg@gmai.com>"
+    }
+  }
+}
