@@ -1,0 +1,32 @@
+src/fe/lib/chatSseClient.ts
+  s_c4937996649a68::t_15acbb91a0f6fa 9
+src/be/engine/runners/type.ts
+  s_c4937996649a68::t_8f55f2d659425b 9
+src/be/engine/runners/common/react-core.ts
+  s_c4937996649a68::t_768fb88b1ce940 8
+  s_c4937996649a68::t_9321af21acdd46 175-187
+  s_c4937996649a68::t_d7cbc54bc93854 92-94
+  s_c4937996649a68::t_2fa44bb6c2e1db 10-34
+  s_c4937996649a68::t_ee1251596e14c2 9
+src/fe/pages/Chat/MessageItem.tsx
+  s_c4937996649a68::t_6bdb81a4df2ebe 4
+  s_c4937996649a68::t_6310a277dd0ea2 80-88
+src/fe/cards/bash-card/index.tsx
+  s_c4937996649a68::t_9f50d43c05c7b1 1-91
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "17cdf322da53d90968b3cc590a58c6c308f121a5",
+  "prompts": {},
+  "sessions": {
+    "s_c4937996649a68": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b155ca53-9ff0-4c43-9797-5dd7d9ae6f47",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "swlws <swlwsgg@gmai.com>"
+    }
+  }
+}
