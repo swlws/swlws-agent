@@ -1,0 +1,30 @@
+.ai-native-space/skills/project-develop/references/config.md
+  s_c4937996649a68::t_c57679266eca6d 8
+.ai-native-tmp/cr/2026-09-10.md
+  s_c4937996649a68::t_6c87b97c10aa01 12,20,95-117
+  s_c4937996649a68::t_33b3c41b382fc3 89-91,93
+  s_c4937996649a68::t_9c60dbbd286b83 5,28,58-88,92,94
+  s_c4937996649a68::t_9b2af00b9c10c0 32-57,118
+  s_c4937996649a68::t_30503e180cce4e 2-4
+  s_c4937996649a68::t_946480ab914b24 6-11
+  s_c4937996649a68::t_b2f38d80de8d80 13-15,17-19
+  s_c4937996649a68::t_b88cf923541f34 21-23,25-27
+  s_c4937996649a68::t_541030525a39c6 29-31
+  s_c4937996649a68::t_d828c1168f8d69 1,16,24
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "f1e29ec49ac9644b5757a6ba063470e77a54d4e6",
+  "prompts": {},
+  "sessions": {
+    "s_c4937996649a68": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b155ca53-9ff0-4c43-9797-5dd7d9ae6f47",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "swlws <swlwsgg@gmai.com>"
+    }
+  }
+}
