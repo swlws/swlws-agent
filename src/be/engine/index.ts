@@ -22,8 +22,10 @@ import {
 import { type CardType } from "./runners/type";
 import { IntentParser } from "./intent";
 import { resolveRunner } from "./intent/resolver";
+import { modeRunners } from "./runners";
 import { applyDeepThinkPolicyPrompt } from "./prompts/deep-think-policy";
 import { skillManager, executeSkill } from "@/be/engine/skills";
+import { logger } from "@/be/lib/logger";
 
 export type { CardType };
 
@@ -51,6 +53,12 @@ export class QueryEngine {
   ): Promise<void> {
     const { uid, conversationId, content } = params;
     const { onToken, onDone, onError } = handlers;
+
+    logger.info("engine", "请求进入", {
+      uid: uid ?? "anonymous",
+      conversationId: conversationId ?? "default",
+      contentLength: content?.length ?? 0,
+    });
 
     try {
       const settings = await this._loadSettings(uid);
@@ -81,6 +89,9 @@ export class QueryEngine {
       // Skill 匹配：/command 优先于意图解析
       const skillMatch = skillManager.match(content);
       if (skillMatch) {
+        logger.info("engine", "路由: skill 命中", {
+          skill: skillMatch.skill.meta.name,
+        });
         await executeSkill(
           skillMatch.skill,
           skillMatch.extractedArgs,
@@ -100,6 +111,15 @@ export class QueryEngine {
           fallbackMode,
           settings.intentConfidenceThreshold,
         );
+        // runner 是对象字面量（无 class 名），从 modeRunners 反查其 mode key
+        const runnerMode =
+          [...modeRunners.entries()].find(([, r]) => r === runner)?.[0] ??
+          "unknown";
+        logger.info("engine", "路由: 意图解析→Runner", {
+          tags: Array.from(intentResult.tags),
+          confidence: intentResult.confidence,
+          runner: runnerMode,
+        });
 
         await runner.execute(
           content,
@@ -132,8 +152,13 @@ export class QueryEngine {
         (err.name === "AbortError" ||
           err.name === "APIUserAbortError" ||
           signal?.aborted)
-      )
+      ) {
+        logger.info("engine", "请求被中止");
         return;
+      }
+      logger.error("engine", "请求处理异常", {
+        error: err instanceof Error ? err.message : String(err),
+      });
       onError(err instanceof Error ? err : new Error("Unknown error"));
     }
   }

@@ -1,6 +1,7 @@
 import type { Tool } from "@/be/engine/tools";
 import { chat } from "@/be/lib/text-llm";
 import { SKILLS_DIR, BUILTIN_SKILLS_DIR, DATA_DIR } from "@/be/config/paths";
+import { logger } from "@/be/lib/logger";
 import { loadSkillsFromDir } from "./loader";
 import { matchSkill } from "./matcher";
 import type { SkillDefinition, SkillMeta, SkillMatchResult } from "./types";
@@ -54,7 +55,7 @@ class SkillManager {
 
     const names = [...this.skills.keys()];
     if (names.length > 0) {
-      console.log(`[Skills] loaded: ${names.join(", ")}`);
+      logger.info("skills", "已加载", { count: names.length, names });
     }
   }
 

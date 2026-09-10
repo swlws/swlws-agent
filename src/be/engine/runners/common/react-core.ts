@@ -2,6 +2,7 @@ import type OpenAI from "openai";
 import { getToolDefinitions, executeTool } from "@/be/engine/tools";
 import { CardType } from "@/be/engine/runners/type";
 import { streamCompletion } from "@/be/lib/llm/provider";
+import { logger } from "@/be/lib/logger";
 
 /** Token 预算：累计消耗超过此值时，完成当前迭代后优雅退出（软约束） */
 const TOKEN_BUDGET = 32_000;
@@ -34,10 +35,18 @@ export async function runReActLoop(
 
   let fullReply = "";
   let usedTokens = 0;
+  let iteration = 0;
   const messages = mutable ? initialMessages : [...initialMessages];
+
+  logger.debug("react", "循环开始", {
+    model,
+    toolCount: toolDefinitions.length,
+  });
 
   while (usedTokens < TOKEN_BUDGET) {
     if (signal?.aborted) break;
+    iteration += 1;
+    logger.debug("react", "迭代", { iteration, usedTokens });
 
     const stream = streamCompletion(model, {
       messages,
@@ -61,7 +70,7 @@ export async function runReActLoop(
       if (chunk.type === "text") {
         // 过滤误输出的 TOOLCALL 行，防止被当作普通文本展示
         if (chunk.text.trim().startsWith("TOOLCALL>")) {
-          console.log("跳过 TOOLCALL 行", chunk.text);
+          logger.debug("react", "跳过 TOOLCALL 行", { text: chunk.text });
           // 跳过此内容，不触发 token 回调
           continue;
         }
@@ -105,6 +114,10 @@ export async function runReActLoop(
     });
 
     // 并行执行所有工具调用
+    logger.info("react", "工具调用", {
+      iteration,
+      tools: toolCalls.map((tc) => tc.function.name),
+    });
     const toolResults = await Promise.all(
       toolCalls.map(async (tc) => {
         const args = (() => {
@@ -115,7 +128,13 @@ export async function runReActLoop(
           }
         })();
 
+        const startedAt = Date.now();
         const result = await executeTool(tc.function.name, args, signal);
+        logger.info("react", "工具完成", {
+          tool: tc.function.name,
+          isError: result.isError,
+          ms: Date.now() - startedAt,
+        });
         return { tc, result };
       }),
     );

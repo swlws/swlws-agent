@@ -1,4 +1,5 @@
 import fs from "fs/promises";
+import { logger } from "@/be/lib/logger";
 import type { Tool } from "./index";
 
 /** 读取上限，避免超大文件撑爆模型上下文 */
@@ -21,8 +22,13 @@ export const readFileTool: Tool = {
   async execute(args) {
     const filePath = String(args.path ?? "").trim();
     if (!filePath) return "[read_file 错误: path 为空]";
+    logger.debug("read_file", "读取文件", { path: filePath });
     try {
       const content = await fs.readFile(filePath, "utf-8");
+      logger.debug("read_file", "读取成功", {
+        path: filePath,
+        bytes: content.length,
+      });
       if (content.length <= MAX_READ) return content;
       return (
         content.slice(0, MAX_READ) +
@@ -30,6 +36,7 @@ export const readFileTool: Tool = {
       );
     } catch (err) {
       const msg = err instanceof Error ? err.message : String(err);
+      logger.error("read_file", "读取失败", { path: filePath, error: msg });
       return `[read_file 读取失败: ${msg}]`;
     }
   },

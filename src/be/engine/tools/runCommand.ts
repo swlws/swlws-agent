@@ -1,4 +1,5 @@
 import { exec } from "child_process";
+import { logger } from "@/be/lib/logger";
 import type { Tool } from "./index";
 
 /**
@@ -43,6 +44,8 @@ export const runCommandTool: Tool = {
     if (!command) return "[run_command 错误: command 为空]";
     const cwd = args.cwd ? String(args.cwd) : process.cwd();
 
+    logger.info("run_command", "执行命令", { command, cwd });
+
     return await new Promise<string>((resolve) => {
       const child = exec(
         command,
@@ -56,9 +59,19 @@ export const runCommandTool: Tool = {
             const killed = (error as { killed?: boolean }).killed;
             if (killed) {
               parts.push(`[命令超时被终止，上限 ${TIMEOUT_MS / 1000}s]`);
+              logger.error("run_command", "命令超时被终止", {
+                command,
+                timeoutMs: TIMEOUT_MS,
+              });
             } else {
               parts.push(`[命令退出码: ${code ?? "非零"}]`);
+              logger.error("run_command", "命令非零退出", {
+                command,
+                code: code ?? "unknown",
+              });
             }
+          } else {
+            logger.info("run_command", "命令完成", { command, code: 0 });
           }
           resolve(truncate(parts.join("\n").trim() || "[命令无输出，退出码 0]"));
         },

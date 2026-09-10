@@ -1,5 +1,6 @@
 import { chat } from "@/be/lib/text-llm";
 import type { ConversationData, MindCard, MindCardsData } from "@/be/session";
+import { logger } from "@/be/lib/logger";
 import { toStandardMessages } from "./messages";
 
 const MINDCARDS_PROMPT = `你是一个对话引导专家。根据当前对话上下文，生成 16 张心智卡片，帮助用户快速开始有价值的对话。
@@ -87,7 +88,9 @@ export async function refreshMindCards(
       : await generateDefaultMindCards();
     return { cards, updatedAt: new Date().toISOString() };
   } catch (err) {
-    console.error("[mindcards] failed to generate:", err);
+    logger.error("mindcards", "生成失败", {
+      error: err instanceof Error ? err.message : String(err),
+    });
     return currentData;
   }
 }

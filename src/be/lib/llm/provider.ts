@@ -1,4 +1,5 @@
 import type OpenAI from "openai";
+import { logger } from "@/be/lib/logger";
 
 /** LLM 协议类型：OpenAI Chat Completions 或 Anthropic Messages */
 export type LLMProtocol = "openai" | "anthropic";
@@ -49,6 +50,11 @@ export async function* streamCompletion(
   params: StreamCompletionParams,
 ): AsyncGenerator<LLMStreamChunk> {
   const protocol = detectProtocol(process.env.SWLWS_TEXT_LLM_BASE_URL);
+  logger.debug("llm", "发起流式补全", {
+    model,
+    protocol,
+    hasTool: (params.tools?.length ?? 0) > 0,
+  });
 
   if (protocol === "anthropic") {
     const { streamAnthropic } = await import("./anthropic-adapter");

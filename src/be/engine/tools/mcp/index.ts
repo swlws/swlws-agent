@@ -2,6 +2,7 @@ import type { Tool, ToolResult } from "@/be/engine/tools";
 import { loadMcpConfig, saveMcpConfig, type McpServerConfig } from "./config";
 import { McpClient } from "./client";
 import { adaptMcpTool, parseMcpToolName } from "./adapter";
+import { logger } from "@/be/lib/logger";
 
 export interface McpServerStatus {
   name: string;
@@ -49,9 +50,10 @@ class McpManager {
         status: "connected",
         tools: client.tools.map((t) => t.name),
       });
-      console.log(
-        `[MCP] ${name} connected, ${adapted.length} tool(s) loaded`,
-      );
+      logger.info("mcp", "连接成功", {
+        server: name,
+        toolCount: adapted.length,
+      });
     } catch (err) {
       const msg = err instanceof Error ? err.message : "Unknown error";
       this.statuses.set(name, {
@@ -61,7 +63,7 @@ class McpManager {
         error: msg,
         tools: [],
       });
-      console.error(`[MCP] ${name} connection failed:`, msg);
+      logger.error("mcp", "连接失败", { server: name, error: msg });
     }
   }
 
