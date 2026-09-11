@@ -1,0 +1,21 @@
+src/app/chat/page.tsx
+  s_c4937996649a68::t_bc787a17f367f6 1-5
+src/app/page.tsx
+  s_c4937996649a68::t_7205ee5a32b409 1-23,26-52
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "275100b4aef3a38764cf430005ca600740925507",
+  "prompts": {},
+  "sessions": {
+    "s_c4937996649a68": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b155ca53-9ff0-4c43-9797-5dd7d9ae6f47",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "swlws <swlwsgg@gmai.com>"
+    }
+  }
+}
