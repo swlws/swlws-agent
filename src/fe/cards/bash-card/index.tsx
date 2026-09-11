@@ -43,12 +43,12 @@ export function BashCard({ content, streaming = false }: BashCardProps) {
         className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-gray-300 hover:text-white"
       >
         <span
-          className={`inline-block transition-transform duration-200 ${expanded ? "rotate-90" : "rotate-0"}`}
+          className={`inline-block shrink-0 transition-transform duration-200 ${expanded ? "rotate-90" : "rotate-0"}`}
         >
           ▶
         </span>
-        <span className="font-medium">终端</span>
-        <span className="truncate font-mono text-xs text-gray-500">
+        <span className="shrink-0 font-medium">终端</span>
+        <span className="min-w-0 flex-1 truncate font-mono text-xs text-gray-500">
           {title}
         </span>
         {streaming && (
