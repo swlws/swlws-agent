@@ -17,3 +17,6 @@ export const BUILTIN_SKILLS_DIR = path.join(
   process.cwd(),
   ".swlws-builtin/skills",
 );
+
+/** 各 skill 的数据/分析报告产出根目录（子目录按 skill 划分） */
+export const REPORTS_DIR = path.join(process.cwd(), "native-tmp");
